@@ -1,13 +1,18 @@
 import psycopg2
 import json
 from operator import itemgetter
-from pprint import pprint
 
-database = "ClinicDashDB"
-user = "srikasip"
-host = "localhost"
-port =''
-password = ''
+# database = "ClinicDashDB"
+# user = "srikasip"
+# host = "localhost"
+# port =''
+# password = ''
+
+database = "dbdn35j2qc2vng"
+user = "nvjdukzppiswle"
+host = "ec2-54-235-206-118.compute-1.amazonaws.com"
+port ='5432'
+password = '95279c5af9434c8427dd077c2e6b1150b36bc1ecb18182a380983cc2e34d6616'
 
 def customSearchQuery(cat, val, colNames):
   filename = "DBFiles/QueryFiles/customMainSelect.sql"
