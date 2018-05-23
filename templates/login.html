@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF8">
+    <meta charset="utf-8"/>
+    <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+    <meta content="width=device-width, initial-scale=1" name="viewport"/>
+    <meta content="clinicdash.com" name="copyright"/>
+    <meta content="Manage your clinical referrals by using our dashboards to understand how much value your referral network is adding." name="description"/>
+    <meta content="clinic, surgical clinic, referral, surgical referrals, referral base, surgical yield, dashboard, surgical dashboard, surgical referral dashboard" name="keywords"/>
+    <meta content="index,follow" name="robots"/>
+    <meta content="Manage your clinic referrals" name="DC.title"/>
+
+    <title>
+      ClinicDash - Login
+    </title>
+
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/js/bootstrap.min.js" type="text/javascript"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='lib/crossfilter.min.js') }}"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/dc/2.1.9/dc.min.js"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='js/helperFunctions.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/datahandler.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/charts.js') }}"></script>
+    <script async type="text/javascript" src="{{ url_for('static', filename='js/signup.js') }}"></script>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/dc/2.1.9/dc.min.css" media="screen" />
+    <link href="https://fonts.googleapis.com/css?family=Rozha+One|Crimson+Text" rel="stylesheet"/>
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/home.css')}}" media="screen" />
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/signup.css')}}" media="screen" />
+    <link rel="shortcut icon" href="{{url_for('static', filename='images/favicon.ico')}}">
+
+  </head>
+
+  <body>
+    <div class="header transHeader">
+      <div class="title">
+        <div><a class="titleLink" href="http://clinicdash.com">Clinic<span id="dashLogo">Dash</span></a></div>
+        <div class="subtitle">Practice made perfect</div>
+      </div>
+    </div>
+
+    <div class="mainBox">
+      <h1>Log into your account</h1>
+      <div class="line">
+        <label class="formLabel" for="username">Username</label>
+        <input type="text" name="username" id="txtUsername" />
+      </div>
+      <div class="line">
+        <label class="formLabel" for="password">Password</label>
+        <input type="password" name="password" id="txtPassword"/>
+      </div>
+      
+      <div class="line">
+        <span id="validationNotice">**Login seemed to fail</span>
+        <button id="loginBtn">Log In</button>
+      </div>
+      <div class="line">
+        <h2>Don't have an account? <a href="/signup">Sign up here</a></h2>
+      </div>
+    </div>
+  </body>
+</html>

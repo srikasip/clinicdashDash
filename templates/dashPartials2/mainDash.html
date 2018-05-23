@@ -1,0 +1,196 @@
+ <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-4 col-md-3">
+        <div class="chart-wrapper">
+          <div class="chart-title">
+            Total Patients Seen
+          </div>
+          <div class="chart-stage">
+            <div id="totalCount">
+            </div>
+          </div>
+          <div class="chart-notes">
+            This is the total number of patients you've seen.
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-8 col-md-9">
+        <div class="chart-wrapper">
+          <div class="chart-title">
+            Monthly Patients Seen
+          </div>
+          <div class="chart-stage">
+            <div id='monthlyCount'></div>
+          </div>
+          <div class="chart-notes">
+            This is your count monthly trend for total patients
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-4 col-md-3">
+        <div class="chart-wrapper">
+          <div class="chart-title">
+            Surgical Yield
+          </div>
+          <div class="chart-stage">
+            <div id="totalYield"></div>
+          </div>
+          <div class="chart-notes">
+            This is your total surgical yield over time
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-8 col-md-9">
+        <div class="chart-wrapper">
+          <div class="chart-title">
+            Surgical Yield by Month
+          </div>
+          <div class="chart-stage">
+            <div id="monthlyYield"></div>
+          </div>
+          <div class="chart-notes">
+            Notes about this chart
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <div class="chart-wrapper">
+          <div class="chart-title">
+            Distribution of practices
+          </div>
+          <div class="chart-stage">
+            <div id="practiceDistribution"></div>
+          </div>
+          <div class="chart-notes">
+            Total Distribution of practices. Percentage contribution of total patients and percentage contribution of surgical patients.
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <div class="chart-wrapper">
+          <div class="chart-title">
+            Distribution of referring doctors
+          </div>
+          <div class="chart-stage">
+            <div id="docDistribution"></div>
+          </div>
+          <div class="chart-notes">
+            Total Distribution of referring providers. Percentage contribution of total patients and percentage contribution of surgical patients.
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      
+      <div class="col-sm-6 col-md-6">
+        <div class="chart-wrapper">
+          <div class="chart-title">
+            Newest 10 Referrers:
+          </div>
+          <div class="chart-stage">
+            <table id='newDocs'>
+              <thead>
+                <tr>
+                  <th>Surgical</th>
+                  <th>Total</th>
+                  <th>Start Date</th>
+                  <th>Referring Provider</th>
+                </tr>
+              </thead>
+            </table>              
+          </div>
+          <div class="chart-notes">
+            The newest referrers. You should give them a great experience up front with solid communication.
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-6 col-md-6">
+        <div class="chart-wrapper">
+          <div class="chart-title">
+            Top 10 Practices:
+          </div>
+          <div class="chart-stage">
+            <table id='topPractices'>
+              <thead>
+                <tr>
+                  <th>Surgical</th>
+                  <th>Total</th>
+                  <th>Yield</th>
+                  <th>Referring Practice</th>
+                </tr>
+              </thead>
+            </table>
+          </div>
+          <div class="chart-notes">
+            This is a cross ranking by volume and yield
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-8">
+        <div class="chart-wrapper">
+          <div class="chart-title">
+            Total Surgical vs. Total Non-Surgical
+          </div>
+          <div class="chart-stage">
+            <div id= "totalSurg"></div>
+          </div>
+          <div class="chart-notes">
+            This is a scatter matrix.  We are looking for practices that are above the x=y line and high up.
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-6 col-md-4">
+        <div class="chart-wrapper">
+          <div class="chart-title">
+            Top 10 Referrers:
+          </div>
+          <div class="chart-stage">
+            <table id='topDocs'>
+              <thead>
+                <tr>
+                  <th>Surgical</th>
+                  <th>Total</th>
+                  <th>Yield</th>
+                  <th>Referring Provider</th>
+                </tr>
+              </thead>
+            </table>
+          </div>
+          <div class="chart-notes">
+            This is a cross ranking by volume and yield
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-6 col-md-4">
+        <div class="chart-wrapper">
+          <div class="chart-title">
+            Worst 10 Referrers
+          </div>
+          <div class="chart-stage">
+            <table id= "worstDocs">
+              <thead>
+                <tr>
+                  <th>Surgical</th>
+                  <th>Total</th>
+                  <th>Yield</th>
+                  <th>Referring Provider</th>
+                </tr>
+              </thead>
+            </table>
+          </div>
+          <div class="chart-notes">
+            These are the low-value adding referrers. You should feel free to de-prioritize your time investment with these folks.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

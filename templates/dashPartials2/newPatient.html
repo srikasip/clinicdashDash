@@ -1,0 +1,65 @@
+<div id="firstElementBuilder" class="addForm patient">
+  <h2>New Patient</h2>
+    <div class="controls">
+      <div class="line">
+        <div class="formInput txtInput">
+          <input id="txt_name" name="name" type="text" required/>
+          <label for="name">Name</label>
+        </div>
+      </div>
+      <div class="line">
+        <div class="formInput txtInput">
+          <input id="txt_refDoc" name="referring" type="text" required/>
+          <label for="referring">Referring Doctor</label>
+        </div>
+      </div>
+      <div class="line">
+        <div class="formInput dateInput">
+          <input id="txt_visitDate" name="visitDate" type="date" required/>
+          <label for="visitDate">Visit Date</label>
+        </div>
+      </div>
+      <div class="line">
+        <div class="formInput txtInput">
+          <input id="txt_diagnosis" name="diagnosis" type="text" required/>
+          <label for="diagnosis">Diagnosis</label>
+        </div>
+      </div>
+      <div class="line">
+        <div class="formInput radioInput">
+          <div class="radioLabel">
+            <span data-group="isSurgical" class="radioItem first selected" id="surgical">Surgical</span>
+            <span data-group="isSurgical" class="radioItem last" id="not_surgical">Not Surgical</span>
+          </div>
+        </div>
+      </div>
+      <div class="line">
+        <div class="col">
+          <div class="formInput">
+            <label for="appropriate">Appropriateness</label>
+            <input id="txt_appScore" name="appropriate" type="range" min="1" max="5"/>
+          </div>
+        </div>
+        <div class="col">
+          <div class="formInput">
+            <label for="complexity">Complexity</label>
+            <input id="txt_complScore" name="complexity" type="range" min="1" max="5"/>
+          </div>
+        </div>
+      </div>
+      <div class="line">
+        <div class="formInput txtInput">
+          <input id="txt_insurance" name="insurance" type="text" required/>
+          <label for="insurance">Insurance</label>
+        </div>
+      </div>
+      <div class="line">
+        <span id="newPtntValidator">** Please fill in all fields.</span>
+        <button class="submitter">Save Patient</button>
+      </div>
+  </div>
+  <div class="overlay">
+    <i id="newptntAdderIcon" class="material-icons">group_add</i>
+  </div>
+</div>
+

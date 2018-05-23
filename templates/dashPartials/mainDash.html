@@ -1,0 +1,82 @@
+<div class="row" id="filterizerRow">
+  <div class="chart-notes" id="filterizerNote">
+    Choose a timeframe
+  </div>
+  <div class="chart-stage" id="dailyHits-filterizer">
+  </div>
+</div>
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-sm-12 col-md-12 card">
+      <div class="chart-wrapper">
+        <div class="chart-title">
+          Practices by patients seen
+        </div>
+        <div class="chart-stage" id="pracDist">
+        </div>
+        <div class="chart-notes">
+          Total Surgical and Non-Surgical from each practice for the selected timeframe
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-6 col-md-6 card">
+      <div class="chart-wrapper">
+        <div class="chart-title">
+          Percentage of Surgical Patients
+        </div>
+        <div class="chart-stage" id="percSurgical">
+        </div>
+        <div class="chart-notes">
+          True is Surgical, False is Non-Surgical. Data is for the selected timeframe
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-6 col-md-6 card">
+      <div class="chart-wrapper">
+        <div class="chart-title">
+          Total number of patients
+        </div>
+        <div class="chart-stage hero" id="totalNumber">
+        </div>
+        <div class="chart-notes">
+          Seen in the selected timeframe
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-6 col-md-6 card">
+      <div class="chart-wrapper">
+        <div class="chart-title">
+          Surgical vs. Non-Surgical by referrer
+        </div>
+        <div class="chart-stage" id="refDocScatter">
+        </div>
+        <div class="chart-notes">
+          Each point represents 1 referring doctor. 
+          His/Her coordinates is the total number of surgical and non-surgical patients seen during the given timeframe.
+          Points above the x=y line tell you who has a net-positive referral.
+          Distance represents the distance from the x=y line.
+        </div>
+      </div>
+    </div>
+
+    <div class="col-sm-6 col-md-6 card">
+      <div class="chart-wrapper">
+        <div class="chart-title">
+          Appropriateness vs Complexity
+        </div>
+        <div class="chart-stage" id="appCompHeat">
+        </div>
+        <div class="chart-notes">
+          The color intensity refers to the number of patients seen with that score.
+          Darker orange means more patients.  You want there to be a heavy concentration in the upper left. 
+          And a low concentration in the lower right.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

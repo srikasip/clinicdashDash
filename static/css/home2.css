@@ -1,0 +1,58 @@
+html {
+  box-sizing: border-box;
+}
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+body, html{
+  width:100%;
+  height:100%;
+  padding:0;
+  margin:0;
+  background-color:#efebe7;
+  color:#504a61;
+  font-family:"Crimson Text", sans-serif;
+}
+h1,h2,h3,h4,.title, .logo {
+  font-family:"Rozha One", sans-serif;
+}
+.title, .logo {
+  /*line-height:2.5em;*/
+  font-size:2em;
+}
+#dashLogo{
+  color:#ed6355;/*#fda94f;*/
+}
+.title
+{
+  float:left;
+}
+.titleLink:hover{
+  text-decoration: none;
+  color:#282d32;
+}
+.titleLink:hover #dashLogo{
+  color:#fda94f;
+}
+.subtitle {
+  /*font-family:"Rozha One", sans-serif;*/
+  font-family:"Crimson Text", sans-serif;
+  color:#504a61;
+  font-size:0.5em;
+  float:none;
+  
+}
+.header {
+  width:100%;
+  overflow-y: hidden;
+  padding:16px;
+  vertical-align: middle;
+  text-align: left;
+}
+
+.titleLink
+{
+  color:#504a61;
+  text-decoration: none;
+}

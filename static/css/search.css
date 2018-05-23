@@ -1,0 +1,23 @@
+#searchHolder
+{
+  width:100%;
+  float:none;
+  clear:both;
+  text-align:center;
+  padding-top:1em;
+}
+#searchBox
+{
+  width:80%;
+  height:2em;
+  border-radius:5px;
+  border-style:none;
+  color:#303030;
+}
+
+.ui-autocomplete-category {
+    font-weight: bold;
+    padding: .2em .4em;
+    margin: .8em 0 .2em;
+    line-height: 1.5;
+  }

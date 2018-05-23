@@ -1,0 +1,41 @@
+
+.row{
+  margin-top:5em;
+}
+
+.chart-title
+{
+  font-size:20px;
+}
+.chart-wrapper{
+  padding:16px;
+}
+
+.chart-stage div{
+  float:none;
+  width:100%;
+  min-height:5em;
+}
+
+#totalCount{
+  text-align:left;
+  font-size:2.5em;
+  line-height: 5em;
+  vertical-align: middle;
+}
+#totalYield{
+  padding:16px;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+th, td {
+  padding: 0.25rem;
+  text-align: left;
+  border: 1px solid #ccc;
+}
+tbody tr:nth-child(odd) {
+  background: #eee;
+}

@@ -1,0 +1,273 @@
+div.patient{
+  float:left;
+  padding-top:0;
+  width:300px;
+  overflow-y: hidden;
+  background-color:#fff;
+  border-radius: 3px;
+  border:solid 1px #fda94f;
+  transition:
+    background 0.8s,
+    height 0.8s;
+}
+div.patient.patientCard{
+  height:320px;
+  overflow:visible;
+}
+div.addForm{
+  height:320px;
+  position:relative;
+}
+div.patient .overlay{
+  height:100%;
+  width:100%;
+  background-color:#fff;
+  line-height:320px;
+  vertical-align: middle;
+  text-align: center;
+  position:absolute;
+  top:0;
+  left:0;
+  z-index:10;
+  font-size:3em;
+  transition:
+    display 0.8s;
+}
+div.addForm .overlay{
+  display:block;
+}
+div.inputForm .overlay{
+  display:none;
+}
+div.addForm .overlay i.material-icons{
+  vertical-align: middle;
+  color:#fda94f;
+  cursor:pointer;
+}
+div.inputForm{
+  height:672px;
+}
+div.patient h2{
+  margin:0;
+  padding:16px;
+  width:100%;
+  text-align:left;
+  background-color:#fda94f;
+  font-size:1.2em;
+  color:#fff;
+
+}
+div.patient{
+  margin-left:32px;
+  margin-top:32px;
+}
+div.inputForm div.controls{
+  width:100%;
+  padding:16px;
+  padding-top:0;
+}
+
+div.patient div.line{
+  width:100%;
+  padding-left:16px;
+  padding-right:16px;
+  margin-top:16px;
+  float:none;
+  clear:both;
+  overflow-y: hidden;
+  font-size:1.2em;
+}
+div.inputForm div.line{
+  padding:0;
+  margin:0;
+  margin-top:16px;
+}
+div.patient .line .col{
+  width:50%;
+  float:left;
+  padding:0;
+  margin:0;
+}
+div.formInput{
+  width:100%;
+  margin:0;
+  padding:0;
+  position:relative;
+  transition:
+    background 0.8s,
+    color 0.8s,
+    top 0.8s,
+    height 0.8s;
+}
+.formInput input, .formInput textarea{
+  width:calc(100% - 16px);
+  padding:8px;
+  padding-top:4px;
+  padding-bottom:4px;
+  font-size:1.2em;
+  border:solid 2px #e7d2d1;
+  position:relative;
+  z-index:3;
+  background-color:transparent;
+
+  transition:
+    background 0.8s,
+    color 0.8s,
+    top 0.8s,
+    height 0.8s;
+}
+.formInput label{
+  transition:
+      background 0.8s,
+      color 0.8s,
+      top 0.8s,
+      height 0.8s;
+}
+.formInput input[type='range']{
+  padding-left:0;
+  padding-right:0;
+  border-style:none;  
+}
+
+.txtInput label{
+  position:absolute;
+  top:0;
+  left:0;
+
+  padding:8px;
+  padding-top:4px;
+  padding-bottom:4px;
+  height:100%;
+  width:calc(100% - 16px);
+  z-index:2;
+  font-size:1.2em;
+  color:#e7d2d1;
+}
+
+.txtInput input:focus{
+  outline:none;
+  border:solid 2px #fda94f;
+  padding-top:calc(0.8em + 8px);
+}
+.txtInput input:focus + label{
+  background-color:#fda94f;
+  height:auto;
+  font-size:0.8em;
+  color:#fff;
+}
+.txtInput input:valid{
+  outline:none;
+  border:solid 2px #e7d2d1;
+  padding-top:calc(0.8em + 8px);
+}
+.txtInput input:valid + label{
+  background-color:#e7d2d1;
+  height:auto;
+  font-size:0.8em;
+  color:#504a61;
+}
+
+.radioInput{
+  border-radius: 5px;
+}
+.dateInput input{
+  outline:none;
+  border:solid 2px #e7d2d1;
+  padding-top:calc(0.8em + 8px);  
+}
+.dateInput label{
+  padding:8px;
+  padding-top:4px;
+  padding-bottom:4px;
+  position:absolute;
+  top:0;
+  left:0;
+  background-color:#e7d2d1;
+  height:auto;
+  font-size:0.8em;
+  color:#504a61;
+  width:calc(100% - 16px);
+}
+
+.dateInput input:focus{
+  outline:none;
+  border:solid 2px #fda94f;
+}
+
+.dateInput input:focus + label{
+  background-color:#fda94f;
+  color:#fff;
+}
+
+div.radioLabel{
+  width:calc(100% - 16px);
+  height:calc(1.2em + 36px);
+  overflow:hidden;
+}
+
+span.radioItem{
+  display:block;
+  float:left;
+  width:50%;
+  padding-top:8px;
+  padding-bottom:8px;
+  text-align: center;
+  cursor:pointer;
+  background-color:#e7d2d1;
+  color:#504a61;
+  font-size:1.2em;
+  font-weight: bold;
+  border:solid 2px #e7d2d1;
+}
+span.radioItem.first{
+  border-bottom-left-radius: 5px;
+  border-top-left-radius: 5px;
+}
+span.radioItem.last{
+  border-bottom-right-radius: 5px;
+  border-top-right-radius: 5px;
+}
+span.radioItem.selected{
+  background-color:#fda94f;
+  color:#fff;
+  border:inset 2px #fda94f;
+}
+span.radioItem:hover{
+  background-color:#e0c9c8;
+}
+span.radioItem.selected:hover{
+  background-color:#fda94f;
+}
+
+button.submitter{
+  width:80%;
+  display:block;
+  float:none;
+
+  margin-left:auto;
+  margin-right:auto;
+  background-color:#ed6355;
+  font-size:1.5em;
+  height:2em;
+  border-radius:1em;
+  color:white;
+  cursor:pointer;
+}
+
+button.submitter:hover{
+  background-color:#fda94f;
+  color:#504a61;
+}
+button.submitter:focus{
+  outline:none;
+  background-color:#fda94f;
+  color:#504a61;
+}
+
+span#newPtntValidator{
+  float:none;
+  color:#ed6355;
+  font-style: italic;
+  font-weight: bold;
+  display:none;
+}
