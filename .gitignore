@@ -9,6 +9,7 @@
 .byebug_history
 *.sublime-project
 *.sublime-workspace
+*.pyc
 
 /public/uploads
 
