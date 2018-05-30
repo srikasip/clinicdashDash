@@ -8,17 +8,11 @@ from operator import itemgetter
 # port =''
 # password = ''
 
-# database = "dbdn35j2qc2vng"
-# user = "nvjdukzppiswle"
-# host = "ec2-54-235-206-118.compute-1.amazonaws.com"
-# port ='5432'
-# password = '95279c5af9434c8427dd077c2e6b1150b36bc1ecb18182a380983cc2e34d6616'
-
-database = "clinicdashDBSB"
-user = "srikasip"
-host = "clinicdashdb-sandbox.c2kutneknah5.us-east-2.rds.amazonaws.com"
+database = "d9235nt8nqau3c"
+user = "rmlvurcgayrkme"
+host = "ec2-54-235-206-118.compute-1.amazonaws.com"
 port ='5432'
-password = 'V1nayaka'
+password = '776249df2f5830ca2b09d7879d96020b6fa503a42ecc60ecefabf7235ab2ed9b'
 
 
 def customSearchQuery(cat, val, colNames):
