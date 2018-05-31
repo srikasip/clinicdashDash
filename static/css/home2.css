@@ -45,7 +45,9 @@ h1,h2,h3,h4,.title, .logo {
 }
 .header {
   width:100%;
-  overflow-y: hidden;
+  overflow-y: visible;
+  min-height:92px;
+  max-height:132px;
   padding:16px;
   vertical-align: middle;
   text-align: left;

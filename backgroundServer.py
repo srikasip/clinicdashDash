@@ -112,4 +112,5 @@ def createNewPatient():
 
 if __name__ == '__main__':
   app.run()
+  #app.run(ssl_context='adhoc')
   #app.run(host="0.0.0.0", port=80)

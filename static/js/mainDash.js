@@ -841,7 +841,7 @@ function cumTotalsGroup(source_group){
       runningSurgical = 0;
 
       results = [];
-      print_filter(source_group);
+      // print_filter(source_group);
       source_group.all().forEach(function(d,i){
         runningTotal = runningTotal + d.value.surgical + d.value.nonsurgical;
         runningSurgical = runningSurgical + d.value.surgical;
@@ -894,12 +894,10 @@ function remove_null_bins(source_group) {
       all:function () {
           results = [];
           source_group.all().forEach(function(d,i){
-            console.log(d);
             if((d.key)&&(d.value)){
                 results.push(d);
               }
             });
-          console.log(results);
           return results;
         }
   };

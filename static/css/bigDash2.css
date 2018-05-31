@@ -95,4 +95,67 @@ li.shelfLink:hover{
   color:#6e5bba;
   font-size:2em;
   cursor:pointer;
+  position: relative;
+  display: inline-block;
+}
+.logoutAlert{
+  display:none;
+  position:fixed;
+  width:50%;
+  height:300px;
+
+  float:none;
+  top:0;
+  left:25%;
+
+  z-index:99;
+  border:solid 1px #eeeeee;
+  background-color:#fff;
+
+  padding:16px;
+  text-align:center;
+
+}
+.logoutAlert .buttonBox{
+  width:100%;
+  float:none;
+  clear:both;
+}
+.logoutAlert .buttonBox button{
+  margin:15px;
+  padding:8px;
+}
+
+
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f1f1f1;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    right:0;
+    z-index: 98;
+}
+
+/* Links inside the dropdown */
+.dropdown-content span {
+    color: #504a61;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    font-size:0.7em;
+}
+
+/* Change color of dropdown links on hover */
+.dropdown-content span:hover {background-color: #ddd}
+
+/* Show the dropdown menu on hover */
+.profiler:hover .dropdown-content {
+    display: block;
+}
+
+/* Change the background color of the dropdown button when the dropdown content is shown */
+.profiler:hover .material-icon {
+    color: #ed6355;
 }

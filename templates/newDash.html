@@ -70,9 +70,27 @@
           Market
         </li>
       </ul>
-      <div class="profiler"><i class="material-icons">account_circle</i></div>
+      <div class="profiler">        
+        <i class="material-icons">account_circle</i>
+        <div class="dropdown-content">
+          <span>Settings</span>
+          <span id="logoutBtn">Logout</span>
+        </div>
+      </div>
     </div>
     <div class="mainBox">
+    </div>
+    <div class="logoutAlert">
+      <h1>Still using ClinicDash?</h1>
+      <p id="logoutTimerDisplay">Logging out in <span id="timerDispayNum">30</span> seconds.</p>
+      <div class="buttonBox">
+        <button id="logoutUsing">
+          I'm Still Here!
+        </button>
+        <button id="logoutDone">
+          Logout
+        </button>
+      </div>
     </div>
   </body>
 </html>

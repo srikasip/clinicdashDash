@@ -11,17 +11,67 @@ var allAutocompletes;
 var numPatientCountGroup;
 var docGroup;
 var pracGroup;
+var logoutTimer;
+var logoutAlertTimer;
 
 $(document).ready(function(){
   if(sessionStorage.uid){
     getServerSearchData();
     LoadRequiredData();
     SetShelfEvents();
+    LoadAutoLogout();
   }
   else{
-    window.location.href = "/login";
+    Logout();
   }
-})
+});
+
+function LoadAutoLogout(){
+  $("#logoutBtn").click(Logout);
+  $(window).on("load", function(){
+    //Start the timer
+    console.log("loaded");
+    startLogoutTimer();
+  });
+  $(window).on("click keydown scroll", function(){
+    window.clearTimeout(logoutTimer);
+    startLogoutTimer();
+  });
+  $("#logoutUsing").click(function(){
+    window.clearTimeout(logoutAlertTimer);
+    window.clearTimeout(logoutTimer);
+    $(".logoutAlert").css("display", "none");
+
+    startLogoutTimer();
+  });
+  $("#logoutDone").click(function(){
+    Logout();
+  });
+}
+
+function startLogoutTimer(){
+  //logoutTimer = window.setInterval(PrepAutoLogout, 3000);
+  //For testing
+  console.log("starting timer");
+  logoutTimer = window.setInterval(PrepAutoLogout, 600000);
+}
+
+function PrepAutoLogout(){
+  //Show an alert modal explaining that we are logging out soon
+  timeoutCounter = 30;
+  console.log("Prepping logout");
+  $(".logoutAlert").css("display", "block");
+  logoutAlertTimer = window.setInterval(function(){
+                  timeoutCounter -= 1; 
+                  if(timeoutCounter > 0){
+                    $("#timerDispayNum").html(String(timeoutCounter));
+                  }
+                  else{
+                    Logout();
+                  }
+                }, 1200);
+
+}
 
 function LoadRequiredData(){
   $.ajax({
@@ -196,13 +246,15 @@ function updateFilters(dimName)
 
   dc.renderAll();
 }
-
+function Logout(){
+  sessionStorage.clear();
+  window.location.href = "/login";
+}
 function SetShelfLinkClicks(){
   $("li.shelfLink").click(function(){
     pagePart = $(this).attr('data');
     if(pagePart == "logout"){
-      sessionStorage.clear();
-      window.location.href = "/login";
+      Logout();
     }
     else{
       $.ajax({
