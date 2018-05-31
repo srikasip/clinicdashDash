@@ -8,8 +8,12 @@ from datetime import datetime
 import connectToDB as dbHand
 import PartialsHandler as partHand
 import htmlmin
+import os
+
 
 app = Flask(__name__)
+#app = Flask(__name__, instance_relative_config=True)
+#app.config.from_pyfile('.env', silent=True)
 
 @app.before_request
 def before_request():
@@ -111,6 +115,11 @@ def createNewPatient():
   #return jsonify(response)
 
 if __name__ == '__main__':
-  app.run()
-  #app.run(ssl_context='adhoc')
+  context = os.environ.get('APP_CD_CONTEXT', default='development')
+  if context == 'development':
+    app.run(ssl_context='adhoc')
+  elif context == 'sandbox':
+    app.run()
+  # else:
+  #   app.run(ssl_context='adhoc')
   #app.run(host="0.0.0.0", port=80)

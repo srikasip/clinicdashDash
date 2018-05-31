@@ -1,18 +1,24 @@
 import psycopg2
 import json
 from operator import itemgetter
+import os
 
 # database = "ClinicDashDB"
 # user = "srikasip"
 # host = "localhost"
 # port =''
 # password = ''
+database = os.environ.get("APP_DB", default=None)
+user = os.environ.get("APP_USER", default=None)
+host = os.environ.get("APP_HOST", default=None)
+port = os.environ.get("APP_PORT", default=None)
+password = os.environ.get("APP_PASSWORD", default=None)
 
-database = "d9235nt8nqau3c"
-user = "rmlvurcgayrkme"
-host = "ec2-54-235-206-118.compute-1.amazonaws.com"
-port ='5432'
-password = '776249df2f5830ca2b09d7879d96020b6fa503a42ecc60ecefabf7235ab2ed9b'
+# database = "d9235nt8nqau3c"
+# user = "rmlvurcgayrkme"
+# host = "ec2-54-235-206-118.compute-1.amazonaws.com"
+# port ='5432'
+# password = '776249df2f5830ca2b09d7879d96020b6fa503a42ecc60ecefabf7235ab2ed9b'
 
 
 def customSearchQuery(cat, val, colNames):
