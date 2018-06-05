@@ -3,3 +3,4 @@ Flask==0.12.2
 requests==2.18.4
 psycopg2==2.7.4
 htmlmin==0.1.12
+pycryptodome==3.6.1
