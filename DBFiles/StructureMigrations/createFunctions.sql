@@ -1,3 +1,70 @@
+CREATE OR REPLACE FUNCTION getToken() RETURNS text AS $$
+DECLARE
+    new_token text;
+BEGIN
+    SELECT array_to_string(ARRAY(SELECT chr((48 + round(random() * 59)) :: integer) 
+                          FROM generate_series(1,15)), '') into new_token;
+
+    
+    RETURN new_token;
+END $$ LANGUAGE PLPGSQL VOLATILE;
+
+CREATE OR REPLACE FUNCTION make_uid() RETURNS text AS $$
+DECLARE
+    new_uid text;
+    done bool;
+BEGIN
+    done := false;
+    WHILE NOT done LOOP
+        SELECT array_to_string(ARRAY(SELECT chr((48 + round(random() * 59)) :: integer) 
+                          FROM generate_series(1,15)), '') INTO new_uid;
+
+        done := NOT exists(SELECT 1 FROM identities WHERE identity=new_uid);
+    END LOOP;
+    RETURN new_uid;
+END $$ LANGUAGE PLPGSQL VOLATILE;
+
+
+
+CREATE OR REPLACE FUNCTION getUniqueValue(n bigint) RETURNS text AS $$
+DECLARE
+ alphabet text:='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+ base int:=length(alphabet); 
+ _n bigint:=abs(n);
+ output text:='';
+BEGIN
+ LOOP
+   output := output || substr(alphabet, 1+(_n%base)::int, 1);
+   _n := _n / base; 
+   EXIT WHEN _n=0;
+ END LOOP;
+ RETURN output;
+END $$ LANGUAGE plpgsql IMMUTABLE STRICT;
+
+
+CREATE OR REPLACE FUNCTION pseudo_encrypt(VALUE bigint) returns int AS $$
+DECLARE
+l1 int;
+l2 int;
+r1 int;
+r2 int;
+i int:=0;
+BEGIN
+ l1:= (VALUE >> 16) & 65535;
+ r1:= VALUE & 65535;
+ WHILE i < 3 LOOP
+   l2 := r1;
+   r2 := l1 # ((((1366 * r1 + 150889) % 714025) / 714025.0) * 32767)::int;
+   l1 := l2;
+   r1 := r2;
+   i := i + 1;
+ END LOOP;
+ RETURN ((r1 << 16) + l1);
+END;
+$$ LANGUAGE plpgsql strict immutable;
+
+
+
 CREATE OR REPLACE FUNCTION insertdiagnoses(val varchar(100))
   RETURNS integer as $$
   DECLARE _itemID_ integer;
@@ -168,52 +235,101 @@ CREATE OR REPLACE FUNCTION createPatient(_userID integer, _name varchar(100), _r
   END $$ language 'plpgsql';
 
 
-CREATE OR REPLACE FUNCTION checkUserName(username varchar(45), useremail varchar(100))
+CREATE OR REPLACE FUNCTION checkUserName(username varchar(100))
   RETURNS boolean as $$
   DECLARE _isUnique_ boolean;
 
   BEGIN
-  
-    SELECT
-    CASE WHEN NOT EXISTS (SELECT l.id FROM logins as l JOIN users as u
-                            ON l.id = u.id
-                          WHERE l.uname = username or u.email = useremail
-                          ) 
-      THEN TRUE ELSE FALSE
-    END as isUnique INTO _isUnique_;
+    _isUnique_ := NOT exists(SELECT 1 FROM usernames WHERE name=username);
 
     RETURN _isUnique_;
   END $$ language 'plpgsql';
 
 
-CREATE OR REPLACE FUNCTION loadLoginInfo(username varchar(45), password varchar(45), _name varchar(100), _specialty varchar(100), _zip varchar(10), _email varchar(100))
-  RETURNS integer as $$
-  DECLARE _user_id_ integer;
+CREATE OR REPLACE FUNCTION createNewUser(username varchar(100), email varchar(100), password varchar(100), spec varchar(100), nam varchar(100), zippy varchar(10))
+  RETURNS json as $$
+  DECLARE _user_dats_ RECORD;
+  DECLARE json_output json;
+  DECLARE _is_new_ boolean;
 
   BEGIN
+    Select CASE WHEN NOT checkUserName(email) THEN false
+           WHEN NOT checkUserName(username) THEN false
+           ELSE true 
+           END INTO _is_new_;
 
-  INSERT INTO logins (uName, pwd)
-  VALUES (username, password)
-  RETURNING id INTO _user_id_;
+    IF _is_new_ THEN
+      INSERT INTO usernames (name) VALUES (email), (username);
 
-  INSERT INTO users (id, name, specialty, zip, email)
-  VALUES (_user_id_, _name, _specialty, _zip, _email);
+      INSERT INTO identities(idx, uid, identity, token, created_at, uname, pwd) 
+            VALUES (DEFAULT,DEFAULT,DEFAULT,DEFAULT,DEFAULT, username, password)
+            RETURNING uid, identity, token INTO _user_dats_;
+      INSERT INTO notifs(uid, email_id)
+            VALUES (_user_dats_.uid, email);
 
-  RETURN _user_id_;
+      INSERT INTO users (uid, specialty, email_id, name, zip)
+            VALUES (_user_dats_.uid, spec, email, nam, zippy);
+    ELSE 
+      Select '' as uid,'' as identity, '' as token INTO _user_dats_;
+    END IF;
 
+    SELECT row_to_json(t)
+    FROM
+      (
+        select _user_dats_.uid as uid, _user_dats_.identity as identity, _user_dats_.token as token
+      ) t INTO json_output;
+
+    RETURN json_output;
   END $$ language 'plpgsql';
 
-CREATE OR REPLACE FUNCTION login(username varchar(45), password varchar(45))
-  RETURNS integer as $$
-  DECLARE _user_id_ integer;
+CREATE OR REPLACE FUNCTION updateToken(sendentity text, password varchar(100))
+  RETURNS text as $$
+  DECLARE _new_token_ text;
   BEGIN
-    SELECT
-    CASE WHEN NOT EXISTS (SELECT l.id FROM logins as l 
-                          WHERE l.uname = username and l.pwd = password)
-      THEN 0
-      ELSE (SELECT max(l.id) FROM logins as l WHERE l.uname = username and l.pwd = password)
-    END INTO _user_id_;
 
-    RETURN _user_id_;
+  Select getToken() INTO _new_token_;
+
+  UPDATE identities
+  SET old_token = token,
+      token = _new_token_
+  WHERE identity = sendentity and pwd = password;
+
+  RETURN _new_token_;
+  END $$ language 'plpgsql';
+
+
+CREATE OR REPLACE FUNCTION updateIdentity(sendentity text, password varchar(100))
+  RETURNS text as $$
+  DECLARE _new_id_ text;
+
+  BEGIN
+
+    Select make_uid() INTO _new_id_;
+    
+    UPDATE identities
+    SET old_identity = identity,
+        identity = _new_id_
+    WHERE identity = sendentity and pwd = password;
+
+    RETURN _new_id_;
+  END $$ language 'plpgsql';
+
+
+CREATE OR REPLACE FUNCTION login(username text, password text)
+  RETURNS json as $$
+  DECLARE _user_id_ RECORD;
+  DECLARE json_output json;
+  
+  BEGIN
+    select uid, identity, token FROM identities where uname = username and pwd = password
+    INTO _user_id_;
+
+    SELECT row_to_json(t)
+    FROM
+      (
+        select uid as uid, identity as identity, token as token FROM identities where uname = username and pwd = password
+      ) t INTO json_output;
+
+    RETURN json_output;
 
   END $$ language 'plpgsql';

@@ -1,21 +1,40 @@
-CREATE TABLE IF NOT EXISTS logins(
+CREATE SEQUENCE identities_idx_seq;
+
+CREATE TABLE IF NOT EXISTS identities(
+  idx serial,
+  uid text primary key DEFAULT getUniqueValue(pseudo_encrypt(nextval('identities_idx_seq'))),
+  identity text UNIQUE not null DEFAULT make_uid(),
+  token text not null DEFAULT getToken(),
+  created_at timestamp NOT NULL DEFAULT now(),
+  uname varchar(50) UNIQUE NOT NULL,
+  pwd varchar(50) NOT NULL,
+  old_identity text, 
+  old_token text
+);
+ALTER SEQUENCE identities_idx_seq OWNED BY identities.idx;
+
+CREATE TABLE if NOT EXISTS notifs(
+  uid text primary key, 
+  email_id varchar(100) not null, 
+  contact_at timestamp NOT NULL DEFAULT now()
+);
+
+CREATE TABLE if NOT EXISTS usernames(
   id serial primary key,
-  uname varchar(45) NOT NULL,
-  pwd varchar(45) NOT NULL,
-  created_at timestamp NOT NULL DEFAULT now()
+  name varchar(100) UNIQUE not null
 );
 
 CREATE TABLE IF NOT EXISTS users(
-  id integer NOT NULL primary key,
-  name varchar(100) NOT NULL,
+  uid varchar(50) primary key,
   specialty varchar(100) NOT NULL,
-  zip varchar(10) NOT NULL,
-  email varchar(100) NOT NULL
+  email_id varchar(100) NOT NULL,
+  name varchar(100) NOT NULL,
+  zip varchar(10) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS patients(
   id serial primary key,
-  user_id integer NOT NULL references users(id),
+  user_id text NOT NULL references identities(uid),
   name varchar(100) NOT NULL,
   clinicdate date NOT NULL,
   refdoc_id integer NOT NULL,

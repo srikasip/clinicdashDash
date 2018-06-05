@@ -29,7 +29,7 @@ function SetButtonClick(){
           type: "POST"
         })
           .done(function(data) {
-            if (data["user_id"]>=1){
+            if (data["isCreated"]){
               window.location.href = "/login";
             }
             else{
@@ -48,7 +48,7 @@ function SetButtonClick(){
 
   $("#loginBtn").click(function(){
       //Validate Entries
-      returnData = {}
+      returnData = {};
       returnData["uName"] = $("#txtUsername").val().trim();
       returnData["pwd"] = $("#txtPassword").val().trim();
 
@@ -66,8 +66,8 @@ function SetButtonClick(){
         })
           .done(function(data) {
             console.log( "success" );
-            if(data["user_id"]>0){
-              sessionStorage.uid = data["user_id"];
+            if(data["isUser"]){
+              sessionStorage.uid = data["userObj"];
               window.location.href = "/dash";
             }
             else{

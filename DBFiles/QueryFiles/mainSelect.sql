@@ -17,5 +17,5 @@ FROM
     ON p.diagnosis_id = diag.id
   LEFT JOIN insurances as ins 
     ON p.insurance_id = ins.id
-WHERE p.user_id = ||user_id||
+WHERE p.user_id = '||user_id||'
 Order By p.clinicdate desc;

@@ -9,7 +9,7 @@ import connectToDB as dbHand
 import PartialsHandler as partHand
 import htmlmin
 import os
-
+import EncDecHandler as crypto
 
 app = Flask(__name__)
 #app = Flask(__name__, instance_relative_config=True)
@@ -41,15 +41,17 @@ def bigDash():
 @app.route("/doSignup", methods=['POST'])
 def saveProfile():
   profile = request.get_json()
-  userId = dbHand.createNewUser(profile["profileData"]["name"], profile["profileData"]["specialty"], profile["profileData"]["zip"], profile["profileData"]["email"], profile["profileData"]["uName"], profile["profileData"]["pwd"])
-  response = {'user_id':userId}
+  is_created = dbHand.createNewUser(profile["profileData"]["name"], profile["profileData"]["specialty"], profile["profileData"]["zip"], profile["profileData"]["email"], profile["profileData"]["uName"], profile["profileData"]["pwd"])
+  response = {'isCreated':is_created}
   return jsonify(response)
 
 @app.route("/doLogin", methods=['POST'])
 def doLogin():
   loginData = request.get_json()
-  userId = dbHand.login(loginData["loginData"]["uName"], loginData["loginData"]["pwd"])
-  response = {'user_id': userId}
+  loginObj = dbHand.login(loginData["loginData"]["uName"], loginData["loginData"]["pwd"])
+  cookie = json.dumps(loginObj['userObj'])
+  cookie = crypto.spotEnc(cookie)
+  response = {"isUser":loginObj['status'], 'userObj':cookie}
   return jsonify(response)
 
 @app.route("/dash/newPatient", methods=['POST'])
@@ -98,9 +100,12 @@ def dashboard_search(id, category):
 @app.route("/dashboard/patients", methods=['POST'])
 def getPatients():
   userData = request.get_json()
+  userData = crypto.spotDec(userData['user_id'])
+  userData = json.loads(userData)
+
   colNames = ["Id", "Name", "ClinicDate", "IsDirect", "WasScreened", "ScreenDate", "IsSurgical", "AppScore", "ComplexityScore"]
   colNames += ["ValueScore", "Location", "Diagnosis", "Referring_Doc", "Practice", "Insurance", "IsMedicaid"]
-  allPatients_json = dbHand.getJSON("DBFiles/QueryFiles/mainSelect.sql", colNames, userData["user_id"])
+  allPatients_json = dbHand.getJSON("DBFiles/QueryFiles/mainSelect.sql", colNames, userData['uid'])
   
   return jsonify(allPatients_json)
 
