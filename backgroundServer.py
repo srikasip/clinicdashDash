@@ -123,8 +123,8 @@ if __name__ == '__main__':
   context = os.environ.get('APP_CD_CONTEXT', default='development')
   if context == 'development':
     app.run(ssl_context='adhoc')
-  elif context == 'sandbox':
+  #elif context == 'sandbox':
+  else:
     app.run()
   # else:
   #   app.run(ssl_context='adhoc')
-  #app.run(host="0.0.0.0", port=80)
