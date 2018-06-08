@@ -118,6 +118,16 @@ def getPatients():
   else:
     return jsonify(allPatients_json)
 
+
+@app.route("/logout", methods=['POST'])
+def logout():
+  userData = request.get_json()
+  userData = crypto.spotDec(userData['user_id'])
+  userData = json.loads(userData)
+
+  result = dbHand.updateToken(userData)
+  return jsonify({'result': result})
+
 @app.route("/dash/createPatient", methods=['POST'])
 def createNewPatient():
   newPatient = request.get_json()

@@ -145,10 +145,26 @@ def createNewUser(name, specialty, azip, email, username, password):
   return result
 
 def getUID(userData):
-  print(userData)
   statement = "Select getUID('"+userData['identity']+"', '"+userData['token']+"');"
   uid = connectToDB(statement);
   return uid;
+
+def updateToken(userData):
+  statement = "Select updateToken('"+userData['identity']+"', '"+userData['token']+"');"
+  uid = connectToDB(statement);
+  print(uid)
+  if uid:
+    return True
+  else:
+    return False
+
+def updateIdentity(userData):
+  statement = "Select updateIdentity('"+userData['identity']+"', '"+userData['token']+"');"
+  uid = connectToDB(statement);
+  if uid:
+    return True
+  else:
+    return False  
 
 
 def getDBTable(command):

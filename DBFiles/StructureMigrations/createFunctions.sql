@@ -297,7 +297,7 @@ CREATE OR REPLACE FUNCTION createNewUser(username varchar(100), email varchar(10
     RETURN json_output;
   END $$ language 'plpgsql';
 
-CREATE OR REPLACE FUNCTION updateToken(sendentity text, password varchar(100))
+CREATE OR REPLACE FUNCTION updateToken(sendentity text, tok text)
   RETURNS text as $$
   DECLARE _new_token_ text;
   BEGIN
@@ -307,13 +307,13 @@ CREATE OR REPLACE FUNCTION updateToken(sendentity text, password varchar(100))
   UPDATE identities
   SET old_token = token,
       token = _new_token_
-  WHERE identity = sendentity and pwd = password;
+  WHERE identity = sendentity and token = tok;
 
   RETURN _new_token_;
   END $$ language 'plpgsql';
 
 
-CREATE OR REPLACE FUNCTION updateIdentity(sendentity text, password varchar(100))
+CREATE OR REPLACE FUNCTION updateIdentity(sendentity text, tok text)
   RETURNS text as $$
   DECLARE _new_id_ text;
 
@@ -324,7 +324,7 @@ CREATE OR REPLACE FUNCTION updateIdentity(sendentity text, password varchar(100)
     UPDATE identities
     SET old_identity = identity,
         identity = _new_id_
-    WHERE identity = sendentity and pwd = password;
+    WHERE identity = sendentity and token = tok;
 
     RETURN _new_id_;
   END $$ language 'plpgsql';

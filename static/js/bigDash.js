@@ -257,9 +257,25 @@ function updateFilters(dimName)
   dc.renderAll();
 }
 function Logout(){
-  sessionStorage.clear();
-  window.location.href = "/login";
+    $.ajax({
+    type:"POST",
+    url: "/logout",
+    data:JSON.stringify({'user_id': sessionStorage.uid}),
+    contentType: "application/json",
+    dataType: "json"
+  })
+ .done(function(data){
+    console.log(data);
+  })
+ .error(function(status){
+  console.log(status);
+ })
+ .always(function(){
+    sessionStorage.clear();
+    window.location.href = "/login";
+ });
 }
+
 function SetShelfLinkClicks(){
   $("li.shelfLink").click(function(){
     pagePart = $(this).attr('data');

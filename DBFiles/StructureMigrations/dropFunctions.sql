@@ -23,3 +23,5 @@ DROP FUNCTION updatetoken(sendentity text);
 DROP FUNCTION login(username varchar(50), password varchar(50));
 DROP FUNCTION createnewuser(username varchar(50), email varchar(50));
 DROP FUNCTION getUID(ident text, tok text);
+DROP FUNCTION updateToken(sendentity text, tok text);
+DROP FUNCTION updateIdentity(sendentity text, tok text);
