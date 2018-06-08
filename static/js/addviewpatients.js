@@ -84,7 +84,10 @@ function NewPatientCreation(){
       type: "POST"
     })
       .done(function(data){
-        if(data != 0){
+        if(data == "Invalid User"){
+          Logout();
+        }
+        else if(data != 0){
           $('input').val('');
           $('input[type="range"]').val(3);
           $('#firstElementBuilder').removeClass('inputForm').addClass('addForm');

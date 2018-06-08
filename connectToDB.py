@@ -5,17 +5,17 @@ import os
 import EncDecHandler as crypto
 
 
-# database = "ClinicDashDB"
-# user = "srikasip"
-# host = "localhost"
-# port =''
-# password = ''
+database = "ClinicDashDB"
+user = "srikasip"
+host = "localhost"
+port =''
+password = ''
 
-database = os.environ.get("APP_DB", default=None)
-user = os.environ.get("APP_USER", default=None)
-host = os.environ.get("APP_HOST", default=None)
-port = os.environ.get("APP_PORT", default=None)
-password = os.environ.get("APP_PASSWORD", default=None)
+# database = os.environ.get("APP_DB", default=None)
+# user = os.environ.get("APP_USER", default=None)
+# host = os.environ.get("APP_HOST", default=None)
+# port = os.environ.get("APP_PORT", default=None)
+# password = os.environ.get("APP_PASSWORD", default=None)
 
 
 def customSearchQuery(cat, val, colNames):
@@ -46,29 +46,33 @@ def customSearchQuery(cat, val, colNames):
 
   return allData
 
-def getJSON(filename, colNames, user_id):
-  with open(filename, "rU") as sqlFile:
-    command = sqlFile.read()
-  
-  command = command.replace("||user_id||", user_id)
-  #print(command)
-  #print(user_id)
-  returnedData = getDBTable(command)
+def getJSON(filename, colNames, userdata):
+  uid = getUID(userdata)
+  if uid:
+    with open(filename, "rU") as sqlFile:
+      command = sqlFile.read()
+    
+    command = command.replace("||user_id||", uid)
+    #print(command)
+    #print(user_id)
+    returnedData = getDBTable(command)
 
-  allData = []
-  for row in returnedData:
-    counter = 0
-    rowData = {}
-    for colName in colNames:
-      if colName == 'Name':
-        rowData[colName] = crypto.spotDec(row[counter])
-      else:
-        rowData[colName] = row[counter]
-      counter += 1
+    allData = []
+    for row in returnedData:
+      counter = 0
+      rowData = {}
+      for colName in colNames:
+        if colName == 'Name':
+          rowData[colName] = crypto.spotDec(row[counter])
+        else:
+          rowData[colName] = row[counter]
+        counter += 1
 
-    allData.append(rowData)
+      allData.append(rowData)
 
-  return allData
+    return allData
+  else:
+    return False
 
 def getOnePatient(ptnt_id):
   statement = 'SELECT getPatientFromID('+str(ptnt_id)+');'
@@ -76,38 +80,47 @@ def getOnePatient(ptnt_id):
   return allPtnts
 
 def getAllPatients(userID):
-  statement = 'SELECT getDocPatients(' + str(userID) + ");"
-  allPtnts = connectToDB(statement)
-  return allPtnts
+  uid = getUID(userID)
+  if uid: 
+    statement = "SELECT getDocPatients('" + uid + "');"
+    allPtnts = connectToDB(statement)
+    return allPtnts
+  else:
+    return False
 
 def createPatient(newPtntDict):
-  keys = ["userID", "name", "refDoc", "visitDate", "diagnosis", "insurance", "appScore", "complScore", "isSurgical"]
-  statement = "SELECT createPatient("
-  for key in keys:
-    if key not in ['appScore', 'complScore', 'isSurgical']:
-      if key == 'name':
-        newPtntDict[key] = crypto.spotEnc(newPtntDict[key])
-      elif key == 'userID':
-        newPtntDict[key] = json.loads(crypto.spotDec(newPtntDict[key]))['uid']
-        
-      statement += "'"+newPtntDict[key]+ "', "
-    else:
-      statement += str(newPtntDict[key])+ ", "
-  statement = statement[:-2]
-  statement = statement + ");"
-  # print(statement)
-  ptntID = connectToDB(statement)
-  return ptntID
+  userData = json.loads(crypto.spotDec(newPtntDict['userID']))
+  uid = getUID(userData)
+  if uid:
+    keys = ["userID", "name", "refDoc", "visitDate", "diagnosis", "insurance", "appScore", "complScore", "isSurgical"]
+    statement = "SELECT createPatient("
+    for key in keys:
+      if key not in ['appScore', 'complScore', 'isSurgical']:
+        if key == 'name':
+          newPtntDict[key] = crypto.spotEnc(newPtntDict[key])
+        elif key == 'userID':
+          newPtntDict[key] = uid
+          
+        statement += "'"+newPtntDict[key]+ "', "
+      else:
+        statement += str(newPtntDict[key])+ ", "
+    statement = statement[:-2]
+    statement = statement + ");"
+    # print(statement)
+    ptntID = connectToDB(statement)
+    return ptntID
+  else:
+    return False
 
 def login(username, password):
   newPass = crypto.spotEnc(password)
   statement = "SELECT login('"+username+"','"+newPass+"');"
   result = connectToDB(statement) #getRecordDB(statement, ['uid', 'identity', 'token'])
   if result:
-    userObj = {"uid":result['uid'], 'identity':result['identity'], 'token':result['token']}
+    userObj = {'identity':result['identity'], 'token':result['token']}
     status = True
   else:
-    userObj = {"uid":None, 'identity':None, 'token':None}
+    userObj = {'identity':None, 'token':None}
     status = False
 
   return {'userObj':userObj, 'status':status}
@@ -125,6 +138,12 @@ def createNewUser(name, specialty, azip, email, username, password):
     result = False
 
   return result
+
+def getUID(userData):
+  print(userData)
+  statement = "Select getUID('"+userData['identity']+"', '"+userData['token']+"');"
+  uid = connectToDB(statement);
+  return uid;
 
 
 def getDBTable(command):

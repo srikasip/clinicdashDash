@@ -87,10 +87,15 @@ function LoadRequiredData(){
     }
     })
    .done(function(data){
-      SetCrossFilter(data);
-      SetShelfLinkClicks();
-      $(".loaderImg").css('display','none');
-      $(".material-icons").css('display','inline-block');
+      if(data['result'] && data['result']=='Invalid User'){
+        Logout();
+      }
+      else{
+        SetCrossFilter(data);
+        SetShelfLinkClicks();
+        $(".loaderImg").css('display','none');
+        $(".material-icons").css('display','inline-block');
+      }
    })
    .fail(function(data){
       $(".mainBox").html("There was an error");
@@ -131,8 +136,13 @@ function getServerSearchData(){
     dataType: "json"
   })
  .done(function(data){
-    allAutocompletes = data;
-    setAutocompleteBox(data);
+    if(data['result'] && data['result'] == 'Invalid User'){
+      Logout();
+    }
+    else{
+      allAutocompletes = data;
+      setAutocompleteBox(data);
+    }
  });
 }
 

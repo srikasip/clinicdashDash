@@ -85,9 +85,15 @@ def searchPartial():
 @app.route('/search/allTerms', methods=['POST'])
 def search_allTerms():
   userData = request.get_json()
+  userData = crypto.spotDec(userData['user_id'])
+  userData = json.loads(userData)
+  
   colNames = ["label", "category", "value"]
-  allData = dbHand.getJSON("DBFiles/QueryFiles/getSearchSuggestions.sql", colNames, userData["user_id"])
-  return jsonify(allData)
+  allData = dbHand.getJSON("DBFiles/QueryFiles/getSearchSuggestions.sql", colNames, userData)
+  if allData == False:
+    return jsonify({'result':'Invalid User'})
+  else:
+    return jsonify(allData)
 
 @app.route("/dashboard/search/<int:id>/<string:category>")
 def dashboard_search(id, category):
@@ -105,18 +111,24 @@ def getPatients():
 
   colNames = ["Id", "Name", "ClinicDate", "IsDirect", "WasScreened", "ScreenDate", "IsSurgical", "AppScore", "ComplexityScore"]
   colNames += ["ValueScore", "Location", "Diagnosis", "Referring_Doc", "Practice", "Insurance", "IsMedicaid"]
-  allPatients_json = dbHand.getJSON("DBFiles/QueryFiles/mainSelect.sql", colNames, userData['uid'])
+  allPatients_json = dbHand.getJSON("DBFiles/QueryFiles/mainSelect.sql", colNames, userData)
   
-  return jsonify(allPatients_json)
+  if allPatients_json == False:
+    return jsonify({'result':'Invalid User'})
+  else:
+    return jsonify(allPatients_json)
 
 @app.route("/dash/createPatient", methods=['POST'])
 def createNewPatient():
   newPatient = request.get_json()
   ptntID = dbHand.createPatient(newPatient)
   #response = partHand.getOnePatientData(ptntID)
-  response = partHand.getOnePatient(ptntID)
-  minified = htmlmin.minify(response, remove_empty_space=True)
-  return render_template_string(minified)
+  if ptntID == False:
+    return render_template_string('Invalid User')
+  else:
+    response = partHand.getOnePatient(ptntID)
+    minified = htmlmin.minify(response, remove_empty_space=True)
+    return render_template_string(minified)
   #return jsonify(response)
 
 if __name__ == '__main__':

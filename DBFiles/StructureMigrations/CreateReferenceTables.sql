@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS addresses(
   fax varchar(20),
   zip1 varchar(5),
   zip2 varchar(5),
-  lat numeric, 
+  lat numeric,
   long numeric
 );
 

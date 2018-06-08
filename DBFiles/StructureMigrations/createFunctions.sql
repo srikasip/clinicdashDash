@@ -1,3 +1,18 @@
+CREATE OR REPLACE FUNCTION getUID(ident text, tok text)
+RETURNS text AS $$
+DECLARE 
+  _uid_ text;
+BEGIN
+  SELECT uid FROM identities 
+    WHERE identity = ident 
+      AND token = tok
+      INTO _uid_;
+
+  RETURN _uid_;
+
+END $$ LANGUAGE PLPGSQL;
+
+
 CREATE OR REPLACE FUNCTION getToken() RETURNS text AS $$
 DECLARE
     new_token text;
