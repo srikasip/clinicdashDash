@@ -4,18 +4,21 @@ from operator import itemgetter
 import os
 import EncDecHandler as crypto
 
+context = os.environ.get('APP_CD_CONTEXT', default='development')
 
-database = "ClinicDashDB"
-user = "srikasip"
-host = "localhost"
-port =''
-password = ''
+if context == 'development':
+  database = "ClinicDashDB"
+  user = "srikasip"
+  host = "localhost"
+  port =''
+  password = ''
 
-# database = os.environ.get("APP_DB", default=None)
-# user = os.environ.get("APP_USER", default=None)
-# host = os.environ.get("APP_HOST", default=None)
-# port = os.environ.get("APP_PORT", default=None)
-# password = os.environ.get("APP_PASSWORD", default=None)
+else:
+  database = os.environ.get("APP_DB", default=None)
+  user = os.environ.get("APP_USER", default=None)
+  host = os.environ.get("APP_HOST", default=None)
+  port = os.environ.get("APP_PORT", default=None)
+  password = os.environ.get("APP_PASSWORD", default=None)
 
 
 def customSearchQuery(cat, val, colNames):
