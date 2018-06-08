@@ -80,6 +80,7 @@ def getJSON(filename, colNames, userdata):
 def getOnePatient(ptnt_id):
   statement = 'SELECT getPatientFromID('+str(ptnt_id)+');'
   allPtnts = connectToDB(statement)
+  allPtnts["name"] = crypto.spotDec(allPtnts["name"])
   return allPtnts
 
 def getAllPatients(userID):
