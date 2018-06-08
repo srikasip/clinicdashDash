@@ -230,7 +230,7 @@ BEGIN
     RETURN json_output;
 END $$ language 'plpgsql';
 
-CREATE OR REPLACE FUNCTION createPatient(_userID integer, _name varchar(100), _refDoc varchar(100), _visitDate date, _diagnosis varchar(100), _insurance varchar(100), _appScore numeric, _complScore numeric, _isSurgical boolean)
+CREATE OR REPLACE FUNCTION createPatient(_userID text, _name varchar(100), _refDoc varchar(100), _visitDate date, _diagnosis varchar(100), _insurance varchar(100), _appScore numeric, _complScore numeric, _isSurgical boolean)
   RETURNS integer as $$
   DECLARE _patient_id integer;
   DECLARE _refDoc_id integer;
