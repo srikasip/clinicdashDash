@@ -107,6 +107,14 @@ function LoadRequiredData(){
     });
 }
 
+function AddPtntToCrossFilter(sentData){
+  var parseDate = d3.timeParse("%b %d, %Y");
+  sentData.ClinicDate = parseDate(sentData.ClinicDate);
+
+  patientCross.add(sentData);
+
+  return sentData;
+}
 function SetCrossFilter(sentData){
   patientCross = crossfilter(sentData);
   var parseDate = d3.timeParse("%a, %d %b %Y %I:%M:%S GMT");

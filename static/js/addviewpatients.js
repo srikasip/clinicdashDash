@@ -84,16 +84,19 @@ function NewPatientCreation(){
       type: "POST"
     })
       .done(function(data){
-        if(data == "Invalid User"){
+        console.log(data);
+        if(data["result"] == "Invalid User"){
           Logout();
         }
         else if(data != 0){
+
           $('input').val('');
           $('input[type="range"]').val(3);
           $('#firstElementBuilder').removeClass('inputForm').addClass('addForm');
-          $("#firstElementBuilder").after(data);
-          //patientCross.add(data);
-          //$("#firstElementBuilder").after(MakePatientCard(data));
+          //$("#firstElementBuilder").after(data);
+          data = AddPtntToCrossFilter(data)
+          // patientCross.add(data);
+          $("#firstElementBuilder").after(MakePatientCard(data));
 
         }
         else{

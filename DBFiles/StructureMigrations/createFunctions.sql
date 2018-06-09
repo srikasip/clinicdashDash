@@ -187,8 +187,9 @@ BEGIN
   SELECT array_to_json(array_agg(row_to_json(t)))
   FROM
     (
-      SELECT p.id, p.name, to_char(p.clinicdate, 'Mon DD, YYYY') as visit_date, p.issurgical, p.appscore, p.complscore, 
-        ref.name as docName, diag.name as diagnosis, ins.name as insurance
+      SELECT p.id, p.name as "Name", to_char(p.clinicdate, 'Mon DD, YYYY') as "ClinicDate", p.issurgical as "IsSurgical", p.appscore as "AppScore", p.complscore as "ComplexityScore", 
+        ref.name as "Referring_Doc", diag.name as "Diagnosis", ins.name as "Insurance", ins.is_medicaid as "IsMedicaid",
+        p.isdirect as "IsDirect", p.wasscreened as "WasScreened", p.screendate as "ScreenDate", p.valuescore as "ValueScore", p.location as "Location", '' as "Practice"
         FROM 
           patients as p
           Join refDocs as ref 
@@ -203,6 +204,10 @@ BEGIN
     ) t INTO json_output;
 
     RETURN json_output;
+
+
+
+
 END $$ language 'plpgsql';
 
 CREATE OR REPLACE FUNCTION getDocPatients(_userID integer)

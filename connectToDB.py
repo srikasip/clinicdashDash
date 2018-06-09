@@ -81,7 +81,7 @@ def getOnePatient(ptnt_id):
   statement = 'SELECT getPatientFromID('+str(ptnt_id)+');'
   allPtnts = connectToDB(statement)
   if allPtnts and len(allPtnts)==1:
-    allPtnts[0]["name"] = crypto.spotDec(allPtnts[0]["name"])
+    allPtnts[0]["Name"] = crypto.spotDec(allPtnts[0]["Name"])
   return allPtnts
 
 def getAllPatients(userID):

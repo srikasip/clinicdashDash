@@ -134,11 +134,13 @@ def createNewPatient():
   ptntID = dbHand.createPatient(newPatient)
   #response = partHand.getOnePatientData(ptntID)
   if ptntID == False:
-    return render_template_string('Invalid User')
+    #return render_template_string('Invalid User')
+    return jsonify({"result": "Invalid User"})
   else:
-    response = partHand.getOnePatient(ptntID)
-    minified = htmlmin.minify(response, remove_empty_space=True)
-    return render_template_string(minified)
+    response = partHand.getOnePatientData(ptntID)
+    #minified = htmlmin.minify(response, remove_empty_space=True)
+    #return render_template_string(minified)
+    return jsonify(response)
   #return jsonify(response)
 
 if __name__ == '__main__':
