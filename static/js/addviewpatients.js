@@ -84,7 +84,7 @@ function NewPatientCreation(){
       type: "POST"
     })
       .done(function(data){
-        console.log(data);
+        //console.log(data);
         if(data["result"] == "Invalid User"){
           Logout();
         }

@@ -111,8 +111,7 @@ function AddPtntToCrossFilter(sentData){
   var parseDate = d3.timeParse("%b %d, %Y");
   sentData.ClinicDate = parseDate(sentData.ClinicDate);
 
-  patientCross.add(sentData);
-
+  patientCross.add([sentData]);
   return sentData;
 }
 function SetCrossFilter(sentData){
