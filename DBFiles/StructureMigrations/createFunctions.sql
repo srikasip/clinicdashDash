@@ -194,9 +194,9 @@ BEGIN
           patients as p
           Join refDocs as ref 
             On p.refdoc_id = ref.id
-          Join diagnoses as diag
+          Left Join diagnoses as diag
             On p.diagnosis_id = diag.id
-          JOIN insurances as ins 
+          Left JOIN insurances as ins 
             ON p.insurance_id = ins.id
         WHERE
           p.id = _patient_id
@@ -242,9 +242,18 @@ CREATE OR REPLACE FUNCTION createPatient(_userID text, _name varchar(100), _refD
   DECLARE _diagnosis_id integer;
   DECLARE _insurance_id integer;
   BEGIN
-    Select insertorGetdiagnoses(lower(_diagnosis)) into _diagnosis_id;
     Select insertorGetrefdocs(_refDoc) into _refDoc_id;
-    Select insertorGetinsurances(upper(_insurance)) into _insurance_id;
+
+
+    Select CASE WHEN _diagnosis is not null THEN
+      insertorGetdiagnoses(lower(_diagnosis)) 
+      ELSE NULL END
+      into _diagnosis_id;
+
+    Select CASE WHEN _insurance is not null THEN
+      insertorGetinsurances(upper(_insurance)) 
+      ELSE NULL END
+      into _insurance_id;
 
     INSERT INTO patients(user_id, name, clinicdate, refdoc_id, diagnosis_id, issurgical,appscore,complscore, insurance_id)
     VALUES (_userID, _name, _visitDate, _refDoc_id, _diagnosis_id, _isSurgical, _appScore, _complScore, _insurance_id)

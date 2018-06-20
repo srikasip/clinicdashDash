@@ -19,6 +19,8 @@ $(document).ready(function(){
     getServerSearchData();
     LoadRequiredData();
     SetShelfEvents();
+    SetRadioButtonClicks();
+    NewPatientCreation();
     LoadAutoLogout();
   }
   else{
@@ -301,9 +303,7 @@ function SetShelfLinkClicks(){
         $(".mainBox").html(data);
         if(pagePart == "newPatient"){
             LoadAllPatients();
-            NewPatientViewer();
-            SetRadioButtonClicks();
-            NewPatientCreation();
+            // NewPatientViewer();
         }
         else if(pagePart == 'mainDash'){
           getMainData();
@@ -326,16 +326,143 @@ function SetShelfLinkClicks(){
 
 
 function SetShelfEvents(){
-  $("span.collapser").click(function(){
-    if ($('.shelf').hasClass("extended")){
-      $('.shelf').removeClass("extended");
-      $('.shelf').addClass("collapsed");
-      $(".mainBox").css("padding-left", "32px");
+  $(".fabNewPatient").click(function(){
+    $(".overlay").css("display", "block");
+  });
+  $(".closer").click(function(){
+    $(".overlay").css("display", "none");
+  })
+}
+
+function NewPatientCreation(){
+  keys = ["name", "refDoc", "visitDate", "diagnosis", "insurance", "appScore", "complScore"];
+  $(".submitter").click(function(){
+    var ptntData = {};
+    var responses = [];
+    ptntData["userID"] = sessionStorage.uid;
+    keys.forEach(function(item, index){
+      if(["name", "refDoc", "diagnosis", "insurance"].indexOf(item)>=0){
+        ptntData[item] = $("#txt_" + item).val().trim();
+      }
+      else{
+        ptntData[item] = $("#txt_" + item).val();
+      }
+      console.log(ptntData[item]);
+    });
+    isSurgical = $(".radioItem.selected[data-group='isSurgical']").attr('id');
+    
+    ptntData["IsSurgical"] = null;
+
+    if(isSurgical == 'surgical'){
+      ptntData["IsSurgical"] = true;
+    }
+    else if(isSurgical == 'not_surgical'){
+      ptntData["IsSurgical"] = false;
+    }
+
+    // if(responses.indexOf("")>=0){
+    //   $("#newPtntValidator").css("display","block");
+    // }
+    console.log("This is the patient Data:");
+    console.log(ptntData);
+    if([ptntData['name'], ptntData['refDoc'], ptntData['visitDate']].indexOf("")>=0){
+      $("#newPtntValidator").css("display","block");
     }
     else{
-      $('.shelf').removeClass("collapsed");
-      $('.shelf').addClass("extended");
-      $(".mainBox").css("padding-left", "282px");
+      $("#newPtntValidator").css("display","none");
+    $.ajax({
+      url: "/dash/createPatient",
+      data: JSON.stringify(ptntData),
+      contentType: "application/json",
+      type: "POST"
+    })
+      .done(function(data){
+        console.log(data);
+        if(data["result"] == "Invalid User"){
+          Logout();
+        }
+        else if(data != 0){
+          $('input').val('');
+          $('input[type="range"]').val(3);
+
+          //$("#firstElementBuilder").after(data);
+          data = AddPtntToCrossFilter(data);
+          // patientCross.add(data);
+          //$("#firstElementBuilder").after(MakePatientCard(data));
+
+        }
+        else{
+          $("#newPtntValidator").css("display","block");
+        }
+        
+      })
+      .fail(function(data){
+        console.log("Error: ");
+        console.log(data);
+      })
+      .always(function(data, status){
+        console.log(status);
+      });
+    }
+  });
+
+}
+function setNewPtntAutocomplete(parentID, catName){
+  $(function(){
+    $.widget( "custom.catcomplete", $.ui.autocomplete, {
+      _create: function() {
+        this._super();
+        this.widget().menu( "option", "items", "> :not(.ui-autocomplete-category)" );
+      },
+      _renderMenu: function( ul, items ) {
+        var that = this;
+        $.each( items, function( index, item ) {
+          if ( item.category == catName ) {
+            var li;
+            // ul.append( "<li class='ui-autocomplete-category'>" + item.category + "</li>" );
+            li = that._renderItemData( ul, item );
+            li.attr( "aria-label", item.label );
+          }
+        });
+      }
+    });
+
+    $(parentID).catcomplete({
+      minLength:1,
+      delay: 0,
+      source: function(request, response){
+        var results = $.ui.autocomplete.filter(allAutocompletes, request.term.toLowerCase().replace("dr.", '').replace('dr ', '').trim());
+        response(results.slice(0, 30));
+      },
+
+      select:function(event, ui){
+        $(parentID).val(ui.item.label);
+        event.preventDefault();
+        $(parentID).val(ui.item.label);
+        $(parentID).attr("data-id",ui.item.value);
+      },
+      focus: function( event, ui ) {
+        event.preventDefault();
+        $(parentID).val(ui.item.label);
+      }
+    });
+  });
+  $(parentID).removeAttr("disabled");
+}
+function SetRadioButtonClicks(){
+  //setNewPtntAutocomplete("#txt_name", "Patients");
+  setNewPtntAutocomplete("#txt_refDoc", "Referrers");
+  setNewPtntAutocomplete("#txt_diagnosis", "Diagnoses");
+  setNewPtntAutocomplete("#txt_insurance", "Insurances");
+
+  $("span.radioItem").click(function() {
+    if($(this).hasClass("selected")) {
+      console.log("randomClick");
+    }
+    else {
+      var thisDG = $(this).attr("data-group");
+      $('span.radioItem[data-group="'+thisDG+'"]').removeClass("selected");
+      $(this).addClass("selected");
     }
   });
 }

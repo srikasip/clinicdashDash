@@ -271,3 +271,16 @@ span#newPtntValidator{
   font-weight: bold;
   display:none;
 }
+
+
+span.editCard{
+  display:none;
+  float:right;
+  cursor:pointer;
+}
+.patientCard:hover h2 span.editCard{
+  display:block;
+}
+span.editCard:active{
+  color:#efefef;
+}

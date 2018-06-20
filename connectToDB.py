@@ -97,18 +97,28 @@ def createPatient(newPtntDict):
   userData = json.loads(crypto.spotDec(newPtntDict['userID']))
   uid = getUID(userData)
   if uid:
-    keys = ["userID", "name", "refDoc", "visitDate", "diagnosis", "insurance", "appScore", "complScore", "isSurgical"]
+    #"name", "refDoc", "visitDate", "diagnosis", "insurance", "appScore", "complScore"
+    keys = ["userID", "name", "refDoc", "visitDate", "diagnosis", "insurance", "appScore", "complScore", "IsSurgical"]
+    #keys = ["userID", "Name", "Referring_Doc", "ClinicDate", "Diagnosis", "Insurance", "AppScore", "ComplexityScore", "IsSurgical"]
     statement = "SELECT createPatient("
     for key in keys:
-      if key not in ['appScore', 'complScore', 'isSurgical']:
+      if key not in ['appScore', 'complScore', 'IsSurgical']:
         if key == 'name':
           newPtntDict[key] = crypto.spotEnc(newPtntDict[key])
         elif key == 'userID':
           newPtntDict[key] = uid
-          
-        statement += "'"+newPtntDict[key]+ "', "
+
+        if newPtntDict[key]:
+          statement += "'"+newPtntDict[key]+ "', "
+        else: 
+          statement += "NULL, "
+
       else:
-        statement += str(newPtntDict[key])+ ", "
+        if newPtntDict[key]:
+          statement += str(newPtntDict[key])+ ", "
+        else: 
+          statement += "NULL, "
+          
     statement = statement[:-2]
     statement = statement + ");"
     # print(statement)

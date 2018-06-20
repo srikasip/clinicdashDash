@@ -3,6 +3,8 @@ import datetime
 
 def getOnePatientData(ptntID):
   allPatients = dbHand.getOnePatient(ptntID)
+  print(ptntID)
+  print(allPatients)
   if allPatients and len(allPatients)>0:
     return allPatients[0]
   else:

@@ -28,10 +28,12 @@ function getDate(sentDate){
 }
 
 function MakePatientCard(d){
-  var surg = "Not Surgical";
-  if(d.IsSurgical){surg = "Surgical";}
-  stringy = '<div class="patient patientCard">';
-  stringy += '<h2>'+d.Name+' ('+surg+')</h2>';
+  var surg = "?";
+  if(d.IsSurgical == true){surg = "Surgical";}
+  else if(d.IsSurgical == false){surg = "Not Surgical";}
+
+  stringy = '<div id="ptnt_'+d.Id+'" class="patient patientCard">';
+  stringy += '<h2>'+d.Name+' ('+surg+')<span class="material-icons editCard">edit</span></h2>';
   stringy += '<div class="line">';
   stringy += '  <strong>Seen on </strong><span><span>'+getDate(d.ClinicDate)+'</span>';
   stringy += '</div>';
@@ -55,6 +57,12 @@ function MakePatientCard(d){
   return stringy;
 }
 
+function EditCard(){
+  $(".editCard").on('click', function(){
+    //Convert this card to an editable
+  });
+}
+
 function NewPatientCreation(){
   keys = ["name", "refDoc", "visitDate", "diagnosis", "insurance", "appScore", "complScore"]
   $(".submitter").click(function(){
@@ -63,17 +71,25 @@ function NewPatientCreation(){
     ptntData["userID"] = sessionStorage.uid;
     keys.forEach(function(item, index){
       if(item != "isSurgical"){
-        ptntData[item] = $("#txt_" + item).val();
+        ptntData[item] = $("#txt_" + item).val().trim();
         responses.push(ptntData[item]);
       }
     });
     isSurgical = $(".radioItem.selected[data-group='isSurgical']").attr('id');
-    ptntData["isSurgical"] = false;
+    
+    ptntData["isSurgical"] = null;
+
     if(isSurgical == 'surgical'){
       ptntData["isSurgical"] = true;
     }
+    else if(isSurgical == 'not_surgical'){
+      ptntData["isSurgical"] = false;
+    }
 
-    if(responses.indexOf("")>=0){
+    // if(responses.indexOf("")>=0){
+    //   $("#newPtntValidator").css("display","block");
+    // }
+    if([ptntData['name'], ptntData['refDoc'], ptntData['visitDate']].indexOf("")>0){
       $("#newPtntValidator").css("display","block");
     }
     else{

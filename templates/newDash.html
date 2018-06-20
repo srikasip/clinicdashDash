@@ -23,10 +23,10 @@
     <script type="text/javascript" src="https://unpkg.com/dc@3.0.4/dc.js"></script>
 
     <script async type="text/javascript" src="{{ url_for('static', filename='js/bigDash.js') }}"></script>
-    <script async type="text/javascript" src="{{ url_for('static', filename='js/addviewpatients.js') }}"></script>
+    <!-- <script async type="text/javascript" src="{{ url_for('static', filename='js/addviewpatients.js') }}"></script> -->
+    <script async type="text/javascript" src="{{ url_for('static', filename='js/patients.js') }}"></script>
     <script async type="text/javascript" src="{{ url_for('static', filename='js/helperFunctions.js') }}"></script>
     <script async type="text/javascript" src="{{ url_for('static', filename='js/mainDash.js') }}"></script>
-
 
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
@@ -40,7 +40,8 @@
     <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/keen-dash.css')}}" />
     <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/home2.css')}}" media="screen" />
     <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/bigDash2.css')}}" media="screen" />
-    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/addviewpatients.css')}}" media="screen" />
+    <!-- <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/addviewpatients.css')}}" media="screen" /> -->
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/patients.css')}}" media="screen" />
     <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/mainDash2.css')}}" media="screen" />
     <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/search.css')}}" media="screen" />
     <link rel="shortcut icon" href="{{url_for('static', filename='images/favicon.ico')}}">
@@ -92,5 +93,74 @@
         </button>
       </div>
     </div>
+    <div class="fabNewPatient">
+      +
+    </div>
+    <div class="overlay">
+      <div class="newPatientAdder">
+        <div id="firstElementBuilder" class="addForm patient">
+          <span class="closer material-icons">close</span>
+          <h2>New Patient</h2>
+            <div class="controls">
+              <div class="line">
+                <div class="formInput txtInput">
+                  <input id="txt_name" name="name" type="text" required />
+                  <label for="name">Name</label>
+                </div>
+              </div>
+              <div class="line">
+                <div class="formInput txtInput">
+                  <input id="txt_refDoc" name="referring" type="text" required />
+                  <label for="referring">Referring Doctor</label>
+                </div>
+              </div>
+              <div class="line">
+                <div class="formInput dateInput">
+                  <input id="txt_visitDate" name="visitDate" type="date" required/>
+                  <label for="visitDate">Visit Date</label>
+                </div>
+              </div>
+              <div class="line">
+                <div class="formInput txtInput">
+                  <input id="txt_diagnosis" name="diagnosis" type="text" />
+                  <label for="diagnosis">Diagnosis</label>
+                </div>
+              </div>
+              <div class="line">
+                <div class="formInput radioInput">
+                  <div class="radioLabel">
+                    <span data-group="isSurgical" class="radioItem first" id="surgical">Surgical</span>
+                    <span data-group="isSurgical" class="radioItem last" id="not_surgical">Not Surgical</span>
+                  </div>
+                </div>
+              </div>
+              <div class="line">
+                <div class="col">
+                  <div class="formInput">
+                    <label for="appropriate">Appropriateness</label>
+                    <input id="txt_appScore" name="appropriate" type="range" min="1" max="5"/>
+                  </div>
+                </div>
+                <div class="col">
+                  <div class="formInput">
+                    <label for="complexity">Complexity</label>
+                    <input id="txt_complScore" name="complexity" type="range" min="1" max="5"/>
+                  </div>
+                </div>
+              </div>
+              <div class="line">
+                <div class="formInput txtInput">
+                  <input id="txt_insurance" name="insurance" type="text" />
+                  <label for="insurance">Insurance</label>
+                </div>
+              </div>
+              <div class="line">
+                <span id="newPtntValidator">** Please fill in all fields.</span>
+                <button class="submitter">Save Patient</button>
+              </div>
+          </div>
+      </div>      
+    </div>
+
   </body>
 </html>

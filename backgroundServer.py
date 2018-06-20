@@ -131,6 +131,7 @@ def logout():
 @app.route("/dash/createPatient", methods=['POST'])
 def createNewPatient():
   newPatient = request.get_json()
+  print(newPatient)
   ptntID = dbHand.createPatient(newPatient)
   #response = partHand.getOnePatientData(ptntID)
   if ptntID == False:
