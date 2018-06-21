@@ -21,7 +21,8 @@ function DateGroup(d){
 
 function SchedGroup(d){
   wordGroup = "Past";
-  if(d.ClinicDate == today){
+  today = new Date();
+  if(d.ClinicDate.toDateString() == today.toDateString()){
     wordGroup = "Today"
   }
   else if(d.ClinicDate > today){
@@ -31,12 +32,12 @@ function SchedGroup(d){
 }
 
 function LoadPatientsByDate(){
-  var patientGrid = dc.dataGrid('.mainBox');
+  var patientGrid = dc.dataGrid('.patientsHolder');
   today = new Date();
   patientGrid
     .dimension(idDim)
     .group(function(d){return getDateDecimal(d.ClinicDate);})
-    .sortBy(function(a){return getDateDecimal(a.ClinicDate);})
+    .sortBy(function(a){return (-1*getDateDecimal(a.ClinicDate));})
     .order(function(a,b){return b - a;})
     .html(function(patientData){
       return MakePatientCard(patientData);
@@ -45,36 +46,46 @@ function LoadPatientsByDate(){
     .htmlGroup(function(d){
       return "<h2>"+getDate(getDateFromDecimal(d.key))+"</h2>"
     });
-
   patientGrid.render();
 }
+
 function LoadAllPatients(groupingFunc){
   groupingFunc = groupingFunc || SchedGroup;
 
-  var patientGrid = dc.dataGrid('.mainBox');
+  var patientGrid = dc.dataGrid('.patientsHolder');
   today = new Date();
   patientGrid
     .dimension(idDim)
     .group(groupingFunc)
-    // .sortBy(function(a){return a.ClinicDate;})
-    .order(function(a,b){return setDate(b) - setDate(a);})
+    .sortBy(function(a){return (-1*getDateDecimal(a.ClinicDate));})
+    .order(function(a,b){return a - b;})
     .html(function(patientData){
       return MakePatientCard(patientData);
     })
     .size(patientCross.size())
     .htmlGroup(function(d){
       // console.log(d);
-      if(d.key instanceof Date){
-        title = getDate(d.key);
-      }
-      else{
-        title = d.key;
-      }
-      return "<h2>"+title+"</h2>";
+      title = d.key;
+      return "<h2 class='"+d.key+"'>"+title+"</h2>";
     });
 
   patientGrid.render();
+  setGridGroupClasses('.patientsHolder');
 }
+
+function setGridGroupClasses(graphParent){
+  $("h2.Complete, h2.Past").parents('.dc-grid-top').addClass('rightBoxDGrid');
+  $("h2.Incomplete").parents('.dc-grid-top').addClass('leftBoxDGrid');
+  $item = $("<div class='leftBoxDGrid'></div>");
+  $item.append($('h2.Today').parents('.dc-grid-top'));
+  $item.append($('h2.Future').parents('.dc-grid-top'));
+
+  $(graphParent).prepend($item);
+
+
+}
+
+
 function setDate(sentDate){
   var formatDate = d3.timeParse("%a %b %d, %Y");
   return formatDate(sentDate);
@@ -143,9 +154,9 @@ function MakePatientCard(d){
 }
 
 function isCompleteRecord(data){
-  keys = ["Name", "ClinicDate", "Referring_Doc", "IsSurgical", "Diagnosis", "Insurance", "AppScore", "ComplexityScore"];
+  backKeys = ["Name", "ClinicDate", "Referring_Doc", "IsSurgical", "Diagnosis", "Insurance", "AppScore", "ComplexityScore"];
   outputs = [];
-  keys.forEach(function(key){
+  backKeys.forEach(function(key){
     if(data[key] == null){
       outputs.push(false);}
     else{

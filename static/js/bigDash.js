@@ -335,14 +335,17 @@ function SetShelfEvents(){
 }
 
 function NewPatientCreation(){
-  keys = ["name", "refDoc", "visitDate", "diagnosis", "insurance", "appScore", "complScore"];
+  clientkeys = ["name", "refDoc", "visitDate", "diagnosis", "insurance", "appScore", "complScore"];
   $(".submitter").click(function(){
     var ptntData = {};
     var responses = [];
     ptntData["userID"] = sessionStorage.uid;
-    keys.forEach(function(item, index){
+    clientkeys.forEach(function(item, index){
       if(["name", "refDoc", "diagnosis", "insurance"].indexOf(item)>=0){
         ptntData[item] = $("#txt_" + item).val().trim();
+        if (typeof ptntData[item] == 'undefined'){
+          ptntData[item] = '';
+        }
       }
       else{
         ptntData[item] = $("#txt_" + item).val();
@@ -387,6 +390,7 @@ function NewPatientCreation(){
 
           //$("#firstElementBuilder").after(data);
           data = AddPtntToCrossFilter(data);
+          dc.redrawAll();
           // patientCross.add(data);
           //$("#firstElementBuilder").after(MakePatientCard(data));
 
