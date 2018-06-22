@@ -336,7 +336,7 @@ function SetShelfEvents(){
 
 function NewPatientCreation(){
   clientkeys = ["name", "refDoc", "visitDate", "diagnosis", "insurance", "appScore", "complScore"];
-  $(".submitter").click(function(){
+  $(".line .submitter").click(function(){
     var ptntData = {};
     var responses = [];
     ptntData["userID"] = sessionStorage.uid;

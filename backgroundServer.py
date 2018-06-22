@@ -144,6 +144,16 @@ def createNewPatient():
     return jsonify(response)
   #return jsonify(response)
 
+@app.route("/dash/editPatient", methods=['POST'])
+def editPatient():
+  editablePatient = request.get_json();
+  patientData = dbHand.editPatient(editablePatient)
+  if patientData == False:
+    return jsonify({"result": "Invalid User"})
+  else:
+    return jsonify(patientData)
+
+
 if __name__ == '__main__':
   context = os.environ.get('APP_CD_CONTEXT', default='development')
   if context == 'development':

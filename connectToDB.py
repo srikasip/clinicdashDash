@@ -93,6 +93,39 @@ def getAllPatients(userID):
   else:
     return False
 
+
+def editPatient(oldPtntDict):
+  userData = json.loads(crypto.spotDec(oldPtntDict['userID']));
+  uid = getUID(userData)
+  if uid:
+    keys = ["userID","ptntID","name", "refDoc", "visitDate", "diagnosis", "insurance", "app", "complex", "IsSurgical"]
+    statement = "SELECT editPatient("
+    for key in keys:
+      if key not in ['ptntID','appScore', 'complScore', 'IsSurgical']:
+        if key == 'name':
+          oldPtntDict[key] = crypto.spotEnc(oldPtntDict[key])
+        elif key == 'userID':
+          oldPtntDict[key] = uid
+
+        if oldPtntDict[key]:
+          statement += "'"+oldPtntDict[key]+ "', "
+        else: 
+          statement += "NULL, "
+
+      else:
+        if oldPtntDict[key]:
+          statement += str(oldPtntDict[key])+ ", "
+        else: 
+          statement += "NULL, "
+          
+    statement = statement[:-2]
+    statement = statement + ");"
+    # print(statement)
+    print(statement)
+    patientData = connectToDB(statement)
+    return patientData
+  else:
+    return False;
 def createPatient(newPtntDict):
   userData = json.loads(crypto.spotDec(newPtntDict['userID']))
   uid = getUID(userData)

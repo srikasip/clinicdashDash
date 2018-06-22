@@ -19,6 +19,7 @@
 
 .patientRow{
   clear:both;
+  position:relative;
   float:none;
   width:100%;
   padding:0;
@@ -30,6 +31,41 @@
 .patientRow.collapsed{
   height:64px;
 }
+.patientRow.expanded{
+  height:calc(192px + 2em);
+}
+.uneditablePatient, .editablePatient{
+  float:left;
+  height:100%;
+  width:calc(100% - 80px);
+}
+
+.patientRow.collapsed .uneditablePatient{
+  display:block;
+}
+.patientRow.collapsed .editablePatient{
+  display:none;
+}
+.patientRow.expanded .editablePatient{
+  display:block;
+}
+.patientRow.expanded .uneditablePatient{
+  display:none;
+}
+.editablePatient .stringy{
+  width:calc(50%);
+  height:100%;
+  float:left;
+  padding-right:8px;
+}
+.editablePatient .nonstringy{
+  width:calc(50%);
+  padding-left:8px;
+  padding-right:8px;
+  height:100%;
+  float:right;
+}
+
 .item{
   margin:8px;
   display:block;
@@ -41,9 +77,7 @@
   padding-right:8px;*/
 }
 .namesBlock{
-  padding-left:8px;
-  padding-right:8px;
-  width:calc(50% - 80px);
+  width:calc(50% - 48px);
 }
 .p_indicator{
   width:16px;
@@ -72,7 +106,7 @@
 .avatar_unknown{
   background-color:lightblue;
 }
-.p_name{
+.namesBlock .p_name{
   display:block;
   font-weight:bold;
   font-size:1.2em;
@@ -83,9 +117,9 @@
   padding:0px;
   clear:both;
   line-height:16px;
-
 }
-.p_refDoc{
+
+.namesBlock .p_refDoc{
   line-height:16px;
   display:block;
   /*font-size:0.8em;*/
@@ -95,12 +129,13 @@
 }
 .p_diag{
   text-align:left;
-  width:calc(25% - 32px);
+  width:calc(25%);
 }
 .p_date{
   text-align:right;
-  width:calc(25% - 32px);
+  width:calc(25%);
 }
+
 .dc-grid-item{
   margin:0;
   padding:0;
@@ -114,4 +149,69 @@
 .rightBoxDGrid{
   width:calc(50% - 32px);
   float:right;
+}
+
+.edit_line{
+  clear:both;
+  float:none;
+  width:100%;
+  height: calc(1.2em + 16px);
+  padding-top:8px;
+  padding-bottom:8px;
+}
+.edit_line label{
+  width:60px;
+  text-align:bottom;
+  font-size:1em;
+}
+.edit_line label[for="name"]{
+  font-size:1.2em;
+}
+.edit_input{
+  background-color:transparent;
+  border:none;
+  border-bottom:1px solid #555;
+  text-align:bottom;
+  width:calc(100% - 60px);
+}
+.edit_control{
+  margin-top:10px;
+}
+.edit_txt_visitDate{
+  border-bottom:none;
+  padding-left:16px;
+}
+.isSurgicalPicker{
+  position:absolute;
+  left:16px;
+  top:0;
+  padding:8px;
+  margin-left:-8px;
+  display:none;
+}
+.isSurgicalPicker .radioItem{
+  background-color:#fff;
+  width:100%;
+  height:64px;
+  margin-right:8px;
+  float:none;
+  border:none;
+  text-align:left;
+  line-height:48px;
+  vertical-align: center;
+}
+.isSurgicalPicker .radioItem.first{
+  border-bottom:1px solid #eee;
+}
+.radioItem .p_avatar{
+  margin:0;
+  margin-left:4px;
+  margin-right:4px;
+}
+.edit_line .submitter{
+  width:75%;
+  float:right;
+}
+.submitter_line{
+  margin-top:32px;
 }

@@ -264,6 +264,43 @@ CREATE OR REPLACE FUNCTION createPatient(_userID text, _name varchar(100), _refD
   END $$ language 'plpgsql';
 
 
+CREATE OR REPLACE FUNCTION editPatient(_userID text, _pID INTEGER, _name varchar(100), _refDoc varchar(100), _visitDate date, _diagnosis varchar(100), _insurance varchar(100), _appScore numeric, _complScore numeric, _isSurgical boolean)
+  RETURNS json as $$
+  DECLARE _patient_id integer;
+  DECLARE _refDoc_id integer;
+  DECLARE _diagnosis_id integer;
+  DECLARE _insurance_id integer;
+
+  BEGIN
+    Select insertorGetrefdocs(_refDoc) into _refDoc_id;
+
+
+    Select CASE WHEN _diagnosis is not null THEN
+      insertorGetdiagnoses(lower(_diagnosis)) 
+      ELSE NULL END
+      into _diagnosis_id;
+
+    Select CASE WHEN _insurance is not null THEN
+      insertorGetinsurances(upper(_insurance)) 
+      ELSE NULL END
+      into _insurance_id;
+
+    UPDATE patients SET 
+    name = _name, 
+    clinicdate = _visitDate, 
+    refdoc_id = _refDoc_id, 
+    diagnosis_id = _diagnosis_id, 
+    issurgical = _isSurgical,
+    appscore = _appScore,
+    complscore = _complScore, 
+    insurance_id = _insurance_id
+    Where id = _pID;
+
+    RETURN (SELECT getPatientFromID(_pID));
+
+  END $$ language 'plpgsql';
+
+
 CREATE OR REPLACE FUNCTION checkUserName(username varchar(100))
   RETURNS boolean as $$
   DECLARE _isUnique_ boolean;

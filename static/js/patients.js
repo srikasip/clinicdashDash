@@ -47,6 +47,7 @@ function LoadPatientsByDate(){
       return "<h2>"+getDate(getDateFromDecimal(d.key))+"</h2>"
     });
   patientGrid.render();
+  setEditControls();
 }
 
 function LoadAllPatients(groupingFunc){
@@ -71,6 +72,7 @@ function LoadAllPatients(groupingFunc){
 
   patientGrid.render();
   setGridGroupClasses('.patientsHolder');
+  setEditControls();
 }
 
 function setGridGroupClasses(graphParent){
@@ -123,7 +125,7 @@ function MakePatientCard(d){
   if(d.IsSurgical == true){surg = "Surgical";}
   else if(d.IsSurgical == false){surg = "Not Surgical";}
   stringy = '';
-  stringy += '<div class="patientRow collapsed">';
+  stringy += '<div class="patientRow collapsed" data-pid='+d.Id+'>';
   stringy += '<span class="item p_indicator ';
   if(isCompleteRecord(d)){
     stringy += 'ind_complete';
@@ -135,12 +137,13 @@ function MakePatientCard(d){
   stringy += '"></span>';
   stringy += '<span class="item p_avatar';
   if(d.IsSurgical == true){
-    stringy += " avatar_surg";}
+    stringy += ' avatar_surg" data-status="surgical"';}
   else if(d.IsSurgical == false){
-    stringy += " avatar_nonsurg";}
+    stringy += ' avatar_nonsurg" data-status="not_surgical"';}
   else{
-    stringy += " .avatar_unknown";}
+    stringy += ' avatar_unknown" data-status="unknown"';}
   stringy += '"></span>';
+  stringy += '<div class="uneditablePatient">';
   stringy += '<div class="item namesBlock">';
   stringy += '<span class="p_name">'+d.Name+'</span>';
   stringy += '<span class="p_refDoc">By: '+d.Referring_Doc+'</span>';
@@ -148,9 +151,94 @@ function MakePatientCard(d){
   stringy += '<span class="item p_diag">'+d.Diagnosis+'</span>';
   stringy += '<span class="item p_date">'+getDate(d.ClinicDate)+'</span>';
   stringy += '</div>';
+  stringy += '<div class="editablePatient">';
+  stringy += '<div class="stringy">';
+  stringy += '<div class="edit_line">';
+  stringy += '<label for="name">Name: </label>';
+  stringy += '<input class="edit_input edit_txt_name" name="name" type="text" value="'+d.Name+'"/>';
+  stringy += '</div>';
+  stringy += '<div class="edit_line">';
+  stringy += '<label for="refDoc">Referrer: </label>';
+  stringy += '<input class="edit_input edit_txt_refDoc" name="refDoc" type="text" value="'+d.Referring_Doc+'"/>';
+  stringy += '</div>';
+  stringy += '<div class="edit_line">';
+  stringy += '<label for="diagnosis">Diagnosis: </label>';
+  stringy += '<input class="edit_input edit_txt_diagnosis" name="diagnosis" type="text" value="'+d.Diagnosis+'"/>';
+  stringy += '</div>';
+  stringy += '<div class="edit_line">';
+  stringy += '<label for="insurance">Insurance: </label>';
+  stringy += '<input class="edit_input edit_txt_insurance" name="insurance" type="text" value="'+d.Insurance+'"/>';
+  stringy += '</div>';
+  stringy += '</div>';
+  stringy += '<div class="nonstringy">';
+  stringy += '<div class="edit_line">';
+  stringy += '<label for="visitDate">Visit Date: </label>';
+  stringy += '<input class="edit_input edit_txt_visitDate" name="visitDate" type="date" value="'+getInputFormattedDate(d.ClinicDate)+'"/>';
+  stringy += '</div>';
+  stringy += '<div class="edit_line edit_control">';
+  stringy += '<span for="approp">Appropriateness:</span>';
+  stringy += '<input class="edit_input edit_txt_app" name="approp" type="range" min="1" max="5" value='+d.AppScore+'/>';
+  stringy += '</div>';
+  stringy += '<div class="edit_line edit_control">';
+  stringy += '<span for="compl">Complexity:</span>';
+  stringy += '<input class="edit_input edit_txt_complex" name="compl" type="range" min="1" max="5" value='+d.ComplexityScore+'/>';
+  stringy += '</div>';
+  stringy += '<div class="edit_line submitter_line">';
+  stringy += '<span id="newPtntValidator">** Please fill in all fields.</span>';
+  stringy += '<button class="submitter">Save Patient</button>';
+  stringy += '</div>';
+  stringy += '</div>';
+  stringy += '<div class="isSurgicalPicker">';
+  if (d.IsSurgical == false){
+    stringy += '<span data-group="isSurgical" class="radioItem first" id="not_surgical">';
+    stringy += '<span class="item p_avatar avatar_nonsurg"></span>Not Surgical';
+    stringy += '</span>';
+
+    stringy += '<span data-group="isSurgical" class="radioItem first" id="surgical">';
+    stringy += '<span class="item p_avatar avatar_surg"></span>Surgical';
+    stringy += '</span>';
+
+    stringy += '<span data-group="isSurgical" class="radioItem second" id="surgical">';
+    stringy += '<span class="item p_avatar avatar_unknown"></span>Unknown';
+    stringy += '</span>';
+  }
+  else if(d.IsSurgical == true){
+    stringy += '<span data-group="isSurgical" class="radioItem first" id="surgical">';
+    stringy += '<span class="item p_avatar avatar_surg"></span>Surgical';
+    stringy += '</span>';
+
+    stringy += '<span data-group="isSurgical" class="radioItem first" id="not_surgical">';
+    stringy += '<span class="item p_avatar avatar_nonsurg"></span>Not Surgical';
+    stringy += '</span>';
+
+    stringy += '<span data-group="isSurgical" class="radioItem second" id="surgical">';
+    stringy += '<span class="item p_avatar avatar_unknown"></span>Unknown';
+    stringy += '</span>';
+  }
+  else{
+    stringy += '<span data-group="isSurgical" class="radioItem first" id="surgical">';
+    stringy += '<span class="item p_avatar avatar_unknown"></span>Unknown';
+    stringy += '</span>';
+
+    stringy += '<span data-group="isSurgical" class="radioItem first" id="surgical">';
+    stringy += '<span class="item p_avatar avatar_surg"></span>Surgical';
+    stringy += '</span>';
+
+    stringy += '<span data-group="isSurgical" class="radioItem second" id="not_surgical">';
+    stringy += '<span class="item p_avatar avatar_nonsurg"></span>Not Surgical';
+    stringy += '</span>';
+  }
+  stringy += '</div>';
+  stringy += '</div>';
+  stringy += '</div>';
 
   return stringy;
   //return "";
+}
+
+function getInputFormattedDate(sentDate){
+  var formatDate = d3.timeFormat("%Y-%m-%d");
+  return formatDate(sentDate);
 }
 
 function isCompleteRecord(data){
@@ -174,4 +262,130 @@ function EditCard(){
   $(".editCard").on('click', function(){
     //Convert this card to an editable
   });
+}
+
+
+function setEditControls(){
+  $(".patientRow").click(function(){
+    if($(this).hasClass("collapsed")){
+      $(this).removeClass("collapsed");
+      $(this).addClass("expanded");
+    }
+    // else{
+    //   $(this).removeClass("expanded");
+    //   $(this).addClass("collapsed");
+    // }
+  });
+  $(".p_avatar").click(function(){
+    $block = $(this).parent();
+    if($block.hasClass('expanded')){
+      $block.find('.isSurgicalPicker').css('display', 'block');
+    }
+  });
+
+  $(".isSurgicalPicker .radioItem").click(function(){
+    $avatar = $(this).find('.p_avatar');
+    $blockAvatar = $(this).parents('.patientRow').children('.p_avatar');
+    
+    if($avatar.hasClass('avatar_surg')){
+      thisClass = 'avatar_surg';
+      otherClass = 'avatar_nonsurg';
+      anotherClass = 'avatar_unknown';
+    }
+    else if($avatar.hasClass('avatar_nonsurg')){
+      thisClass = 'avatar_nonsurg';
+      otherClass = 'avatar_surg';
+      anotherClass = 'avatar_unknown';
+    }
+    else{
+      thisClass = 'avatar_unknown';
+      otherClass = 'avatar_surg';
+      anotherClass = 'avatar_nonsurg';
+    }
+    console.log(thisClass);
+    if($blockAvatar.hasClass(thisClass)){done = true;}
+    else{
+      $blockAvatar.removeClass(otherClass); 
+      $blockAvatar.removeClass(anotherClass); 
+      $blockAvatar.addClass(thisClass); 
+      done = true;
+    }
+    $('.isSurgicalPicker').css('display', 'none');
+
+  });
+
+  $(".edit_line .submitter").click(function(){
+    //Get to the parent and get an id
+    $patient = $(this).parents('.patientRow');
+
+    ptntData = {};
+    ptntData["userID"] = sessionStorage.uid;
+    ptntData["ptntID"] = parseInt($patient.attr('data-pid'));
+
+    editKeys = ["name", "refDoc", "visitDate", "diagnosis", "insurance", "app", "complex"];
+
+    editKeys.forEach(function(item, i){
+      if(["name", "refDoc", "diagnosis", "insurance"].indexOf(item)>=0){
+        ptntData[item] = $patient.find(".edit_input.edit_txt_" + item).val().trim();
+        if (typeof ptntData[item] == 'undefined'){
+          ptntData[item] = '';
+        }
+      }
+      else{
+        ptntData[item] = $patient.find(".edit_input.edit_txt_" + item).val();
+      }
+    });
+
+    isSurgical = $patient.children("p_avatar").attr('data-status');
+    
+    ptntData["IsSurgical"] = null;
+
+    if(isSurgical == 'surgical'){
+      ptntData["IsSurgical"] = true;
+    }
+    else if(isSurgical == 'not_surgical'){
+      ptntData["IsSurgical"] = false;
+    }
+    
+    if([ptntData["name"], ptntData["refDoc"], ptntData["visitDate"]].indexOf('')>=0){
+      $patient.find("#newPtntValidator").css("display","block");
+    }
+    else{
+      $patient.find("#newPtntValidator").css("display","none");
+      $.ajax({
+      url: "/dash/editPatient",
+      data: JSON.stringify(ptntData),
+      contentType: "application/json",
+      type: "POST"
+    })
+      .done(function(data){
+        console.log(data);
+        if(data["result"] == "Invalid User"){
+          Logout();
+        }
+        else if(data != 0){
+
+          $patient.removeClass('expanded').addClass('collapsed');
+          idDim.filter(ptntData["ptntID"]);
+          patientCross.remove();
+          idDim.filterAll();
+          data = AddPtntToCrossFilter(data);
+          dc.redrawAll();
+        }
+        else{
+          $("#newPtntValidator").css("display","block");
+        }
+        
+      })
+      .fail(function(data){
+        console.log("Error: ");
+        console.log(data);
+      })
+      .always(function(data, status){
+        console.log(status);
+      });
+    }
+
+  });
+
 }
