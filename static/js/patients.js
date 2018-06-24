@@ -245,7 +245,7 @@ function isCompleteRecord(data){
   backKeys = ["Name", "ClinicDate", "Referring_Doc", "IsSurgical", "Diagnosis", "Insurance", "AppScore", "ComplexityScore"];
   outputs = [];
   backKeys.forEach(function(key){
-    if(data[key] == null){
+    if((data[key] == null)||(data[key] == "null")){
       outputs.push(false);}
     else{
       outputs.push(true);}
@@ -291,16 +291,20 @@ function setEditControls(){
       thisClass = 'avatar_surg';
       otherClass = 'avatar_nonsurg';
       anotherClass = 'avatar_unknown';
+      dataAttr = 'surgical';
     }
     else if($avatar.hasClass('avatar_nonsurg')){
       thisClass = 'avatar_nonsurg';
       otherClass = 'avatar_surg';
       anotherClass = 'avatar_unknown';
+      dataAttr = 'not_surgical';
     }
     else{
       thisClass = 'avatar_unknown';
       otherClass = 'avatar_surg';
       anotherClass = 'avatar_nonsurg';
+
+      dataAttr = 'unknown';
     }
     console.log(thisClass);
     if($blockAvatar.hasClass(thisClass)){done = true;}
@@ -308,6 +312,8 @@ function setEditControls(){
       $blockAvatar.removeClass(otherClass); 
       $blockAvatar.removeClass(anotherClass); 
       $blockAvatar.addClass(thisClass); 
+
+      $blockAvatar.attr('data-status', dataAttr);
       done = true;
     }
     $('.isSurgicalPicker').css('display', 'none');
@@ -336,8 +342,8 @@ function setEditControls(){
       }
     });
 
-    isSurgical = $patient.children("p_avatar").attr('data-status');
-    
+    isSurgical = $patient.children(".p_avatar").attr('data-status');
+    console.log(isSurgical);
     ptntData["IsSurgical"] = null;
 
     if(isSurgical == 'surgical'){
@@ -346,7 +352,7 @@ function setEditControls(){
     else if(isSurgical == 'not_surgical'){
       ptntData["IsSurgical"] = false;
     }
-    
+
     if([ptntData["name"], ptntData["refDoc"], ptntData["visitDate"]].indexOf('')>=0){
       $patient.find("#newPtntValidator").css("display","block");
     }
@@ -369,8 +375,11 @@ function setEditControls(){
           idDim.filter(ptntData["ptntID"]);
           patientCross.remove();
           idDim.filterAll();
+
           data = AddPtntToCrossFilter(data);
           dc.redrawAll();
+          setGridGroupClasses('.patientsHolder');
+          setEditControls();
         }
         else{
           $("#newPtntValidator").css("display","block");

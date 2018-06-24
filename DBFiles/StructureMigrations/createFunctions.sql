@@ -265,7 +265,7 @@ CREATE OR REPLACE FUNCTION createPatient(_userID text, _name varchar(100), _refD
 
 
 CREATE OR REPLACE FUNCTION editPatient(_userID text, _pID INTEGER, _name varchar(100), _refDoc varchar(100), _visitDate date, _diagnosis varchar(100), _insurance varchar(100), _appScore numeric, _complScore numeric, _isSurgical boolean)
-  RETURNS json as $$
+  RETURNS INTEGER as $$
   DECLARE _patient_id integer;
   DECLARE _refDoc_id integer;
   DECLARE _diagnosis_id integer;
@@ -296,7 +296,7 @@ CREATE OR REPLACE FUNCTION editPatient(_userID text, _pID INTEGER, _name varchar
     insurance_id = _insurance_id
     Where id = _pID;
 
-    RETURN (SELECT getPatientFromID(_pID));
+    RETURN _pID;
 
   END $$ language 'plpgsql';
 

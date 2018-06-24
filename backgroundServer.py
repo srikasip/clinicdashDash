@@ -147,11 +147,14 @@ def createNewPatient():
 @app.route("/dash/editPatient", methods=['POST'])
 def editPatient():
   editablePatient = request.get_json();
-  patientData = dbHand.editPatient(editablePatient)
-  if patientData == False:
+  ptntID = dbHand.editPatient(editablePatient)
+
+  if ptntID == False:
+    #return render_template_string('Invalid User')
     return jsonify({"result": "Invalid User"})
   else:
-    return jsonify(patientData)
+    response = partHand.getOnePatientData(ptntID)
+    return jsonify(response)
 
 
 if __name__ == '__main__':

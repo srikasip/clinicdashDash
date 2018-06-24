@@ -113,7 +113,7 @@ def editPatient(oldPtntDict):
           statement += "NULL, "
 
       else:
-        if oldPtntDict[key]:
+        if oldPtntDict[key] or oldPtntDict[key] == False:
           statement += str(oldPtntDict[key])+ ", "
         else: 
           statement += "NULL, "
