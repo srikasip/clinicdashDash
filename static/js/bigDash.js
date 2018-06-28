@@ -300,6 +300,7 @@ function SetShelfLinkClicks(){
         dataType: "html"
       })
       .done(function(data){
+        $(".mainBox").empty();
         $(".mainBox").html(data);
         if(pagePart == "newPatient"){
             LoadAllPatients();

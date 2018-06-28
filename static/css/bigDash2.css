@@ -447,3 +447,45 @@ span.editCard{
 .patientCard:hover h2 span.editCard{
   display:block;
 }
+
+.warmWelcomeBox{
+  width:60%;
+  min-width:350px;
+  margin-left:20%;
+  overflow-y:hidden;
+}
+.warmLine{
+  float:none;
+  width:100%;
+  min-height:150px;
+  clear:both;
+  padding-top:8px;
+  margin-top:32px;
+}
+.warmLine .iconer{
+  float:left;
+  width:150px;
+  height:150px;
+}
+.warmLine .descr{
+  float:left;
+  width:calc(100% - 150px);
+  height:150px;
+  padding-left:16px;
+}
+.newPtntFab{
+  height:114px;
+  width:114px;
+  border-radius:57px;
+  background-color:tomato;
+  color:white;
+  font-size:6em;
+  line-height:100px;
+  vertical-align:middle;
+  text-align:center;
+  margin-left:24px;
+}
+.iconer img{
+  width:134px;
+  margin-left:16px;
+}
