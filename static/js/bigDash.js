@@ -6,6 +6,7 @@ var docDim;
 var pracDim;
 var nameDim;
 var insDim; 
+var filterDim;
 var filterFunctions = {"Doc": [], "Diag": [], "Prac": [], "Date": [], "Name": [], "Ins": []};
 var allAutocompletes;
 var numPatientCountGroup;
@@ -28,6 +29,123 @@ $(document).ready(function(){
   }
 });
 
+function LoadFilterizer(){
+  
+  filterDim = patientCross.dimension(function(d){return d3.timeWeek(d.ClinicDate);});
+
+  var clinicDateSurgGroup = filterDim.group().reduceSum(function(d){
+    if(d.IsSurgical == false){return 0;}
+    else {return 1;} });
+  var clinicDateNonSurgGroup = filterDim.group().reduceSum(function(d){
+    if(d.IsSurgical == false){return 1;}
+    else {return 0;} });
+
+  var minclinicDate = d3.timeWeek(filterDim.bottom(1)[0].ClinicDate);
+  var maxclinicDate = d3.timeWeek(filterDim.top(1)[0].ClinicDate);
+  var minMaxArrclinicDate = [minclinicDate,maxclinicDate];
+
+  var clinicDategraphingGroups = [{'data':clinicDateSurgGroup, 'name': 'Surgical'},{'data':clinicDateNonSurgGroup, 'name': 'Non Surgical'}];
+  setBarChartChooser("#somethingSpecialFilterizer", filterDim, 0,60, clinicDategraphingGroups, minMaxArrclinicDate, "Number of Cases");
+}
+function setBarChartChooseLinear(dom_id, sentDimension, width=0, height=400, allGroups=[], minMax=[], yTitle=''){
+  if(width == 0){
+    width = $(dom_id).parent().innerWidth();
+  }
+
+  var hitslineChart  = dc.barChart(dom_id);
+
+  manyDate = allGroups[0].data.all().map(a => a.key);
+  manyDate = manyDate.concat(allGroups[1].data.all().map(a => a.key));
+  
+  var allDate = [];
+  
+
+  manyDate.forEach(function(i,el){
+    if(allDate.indexOf(i) < 0) 
+      { allDate.push(i); }
+  });
+  allDate = allDate.sort(function(a,b){
+    return a - b;
+  });
+
+  console.log(allDate);
+
+  hitslineChart
+    .width(width).height(height)
+    .dimension(sentDimension)
+    .group(allGroups[0].data,allGroups[0].name)
+    .xUnits(dc.units.integers)
+    .valueAccessor(function(d){return d.value;})
+    .keyAccessor(function(d){return allDate.indexOf(d.key);})
+    .brushOn(true)
+    .x(d3.scaleLinear().domain([-1,allDate.length]));
+
+  counter = 0;
+  allGroups.forEach(function(d) {
+    if(counter > 0) {
+      hitslineChart.stack(d.data, d.name);
+    }
+    counter = counter + 1;
+  });
+
+  dc.renderAll();
+}
+
+function setBarChartChooser(dom_id, sentDimension, width=0, height=400, allGroups=[], minMax=[], yTitle=''){
+  if(width == 0){
+    width = $(dom_id).parent().innerWidth();
+  }
+  var hitslineChart  = dc.barChart(dom_id);
+  hitslineChart
+    .width(width).height(height)
+    .dimension(sentDimension)
+    .group(allGroups[0].data,allGroups[0].name)
+    .xUnits(d3.timeWeeks);
+  
+  counter = 0;
+  allGroups.forEach(function(d) {
+    if(counter > 0) {
+      hitslineChart.stack(d.data, d.name);
+    }
+    counter = counter + 1;
+  });
+  
+  hitslineChart
+    .x(d3.scaleTime())
+    .valueAccessor(function(d){return d.value;})
+    .keyAccessor(function(d){return d.key;})
+    .round(d3.timeWeek.round)
+    .brushOn(true)
+    .yAxis().ticks(d3.format('.3s'));
+
+  function calc_domain(chart) {
+                var min = d3.min(chart.group().all(), function(kv) { return kv.key; }),
+                    max = d3.max(chart.group().all(), function(kv) { return kv.key; });
+                max = d3.timeMonth.offset(max, 1);
+                chart.x().domain([min, max]);
+            }
+  hitslineChart.on('preRender', calc_domain);
+  hitslineChart.on('preRedraw', calc_domain);
+
+  hitslineChart.render();
+}
+
+function getYearMonth(sentFloat){
+  allMonths = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"];
+  yearPart = parseInt(sentFloat);
+  monthPart = parseInt((sentFloat - yearPart) * 100.0) - 1;
+
+  // console.log(sentFloat);
+  // console.log(yearPart);
+  // console.log(monthPart);
+  if(monthPart <= 0){
+    return "Jan " + String(yearPart);
+  }
+  else{
+    return allMonths[monthPart] + " " + String(yearPart);
+    //return "";
+  }
+}
 function LoadAutoLogout(){
   $("#logoutBtn").click(Logout);
   $(window).on("load", function(){
@@ -94,6 +212,8 @@ function LoadRequiredData(){
       }
       else{
         SetCrossFilter(data);
+
+        LoadFilterizer();
         SetShelfLinkClicks();
         $(".loaderImg").css('display','none');
         $(".material-icons").css('display','inline-block');
@@ -118,11 +238,12 @@ function AddPtntToCrossFilter(sentData){
 }
 function SetCrossFilter(sentData){
   patientCross = crossfilter(sentData);
+  
   var parseDate = d3.timeParse("%a, %d %b %Y %I:%M:%S GMT");
   sentData.forEach(function(d){
     d.ClinicDate = parseDate(d.ClinicDate);
   });
-
+  //print_filter(patientCross);
   dateDim = patientCross.dimension(function(d){return d.ClinicDate;});
   diagDim = patientCross.dimension(function(d){return d.Diagnosis;});
   docDim = patientCross.dimension(function(d){return d.Referring_Doc;});
@@ -134,6 +255,16 @@ function SetCrossFilter(sentData){
   surgicalDim = patientCross.dimension(function(d){return d.IsSurgical;});
 
   //SetSearchAutocomplete(keys);
+}
+
+function floatDate(sentDate){
+  year = sentDate.getFullYear();
+  month = sentDate.getMonth() + 1;
+
+  monthPart = month/100.0;
+  // console.log(month);
+  // console.log(monthPart);
+  return (year + monthPart);
 }
 
 function getServerSearchData(){

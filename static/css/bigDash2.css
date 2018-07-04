@@ -184,7 +184,7 @@ li.shelfLink:hover{
 .fabNewPatient:active{
   box-shadow: 2px 2px rgba(100,100,100,0.3);
 }
-.overlay{
+.puppylay_overlay{
   background-color:rgba(0,0,0,0.6);
   width:100vw;
   height:100vh;
@@ -488,4 +488,13 @@ span.editCard{
 .iconer img{
   width:134px;
   margin-left:16px;
+}
+#filterizerRow{
+  width:100%;
+  padding-left:32px;
+  padding-right:32px;
+  margin-top:-16px;
+}
+#filterizerNote{
+  text-align:center;
 }

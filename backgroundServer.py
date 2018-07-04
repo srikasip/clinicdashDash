@@ -32,6 +32,11 @@ def signup():
 def login():
   return render_template("login.html")
 
+@app.route('/pt')
+def pt():
+  return render_template("partialTester.html")
+
+
 @app.route('/', methods=['GET'])
 @app.route('/dash', methods=['GET', 'POST'])
 def bigDash():
