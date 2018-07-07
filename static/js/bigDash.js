@@ -243,16 +243,21 @@ function SetCrossFilter(sentData){
   sentData.forEach(function(d){
     d.ClinicDate = parseDate(d.ClinicDate);
   });
-  //print_filter(patientCross);
+  
+  practices = [];
+
   dateDim = patientCross.dimension(function(d){return d.ClinicDate;});
   diagDim = patientCross.dimension(function(d){return d.Diagnosis;});
   docDim = patientCross.dimension(function(d){return d.Referring_Doc;});
-  pracDim = patientCross.dimension(function(d){return d.Practice;});
+  pracDim = patientCross.dimension(function(d){ return d.Practice; });
+  
   idDim = patientCross.dimension(function(d){return d.Id;});
   insDim = patientCross.dimension(function(d){return d.Insurance;});
   nameDim = patientCross.dimension(function(d){return d.Name;});
   monthDim = patientCross.dimension(function(d){return [d.ClinicDate.getFullYear(), d.ClinicDate.getMonth()]});
   surgicalDim = patientCross.dimension(function(d){return d.IsSurgical;});
+
+
 
   //SetSearchAutocomplete(keys);
 }
@@ -459,11 +464,11 @@ function SetShelfLinkClicks(){
 
 function SetShelfEvents(){
   $(".fabNewPatient").click(function(){
-    $(".overlay").css("display", "block");
+    $(".puppylay_overlay").css("display", "block");
   });
   $(".closer").click(function(){
-    $(".overlay").css("display", "none");
-  })
+    $(".puppylay_overlay").css("display", "none");
+  });
 }
 
 function NewPatientCreation(){

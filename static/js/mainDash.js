@@ -24,6 +24,7 @@ function SetGraphsData(){
   LoadMonthlyPatientsGraph();
   LoadSurgicalYield();
   LoadMonthlySurgicalYieldGraph();
+  //LoadPracticeDistoTester();
   LoadPracticeDisto();
   //LoadPracDistroCum()
   LoadDocDistro();
@@ -351,101 +352,40 @@ function LoadDocDistro(){
     });
 }
 
-function LoadPracDistroCum(){
-  pracGroup = pracDim.group().reduce(
-                        function(p,v){
-                          if(v.IsSurgical){
-                            p["surgical"] += 1;
-                          }
-                          else{
-                            p["nonsurgical"] += 1;
-                          }
-                          return p;
-                        },
-                        function(p,v){
-                          if(v.IsSurgical){
-                            p["surgical"] -= 1;
-                          }
-                          else{
-                            p["nonsurgical"] -= 1;
-                          }
-                          return p;
-                        },
-                        function(){return {"surgical":0, "nonsurgical":0};}
-                      ).order(groupScoringFunc);//There was nothing here previously
 
-  height = 480;
+function LoadPracticeDistoTester(){
+  practicesArr = [];
+
+  pracGroup = pracDim.group().reduceCount(function(d){
+    if (practicesArr.indexOf(d.Practice)<0){
+      practicesArr.push(d.Practice);
+    }
+    return 1;
+  });
+
+  print_filter(pracDim);
+
+  height = 480; 
   width = $("#practiceDistribution").width();
-  var newPracGroup = pracGroup;//remove_null_bins(pracGroup);
-  // print_filter(newPracGroup)
-    
-  cumGroup = cumTotalsGroup(pracGroup);
 
-  yScale = d3.scaleLinear().domain([0,100]).range([0, height]);
+  pracDistro = dc.barChart("#practiceDistribution");
+  
 
-  composerLine = dc.compositeChart("#practiceDistribution");
-  composerLine
+  pracDistro
     .width(width)
     .height(height)
-    .x(d3.scaleOrdinal())
+    .dimension(pracDim)
+    .group(pracGroup)
+    .ordering(function(d){return -(d.value);})
+    //.ordering(graphOrderingFunction)
     .xUnits(dc.units.ordinal)
-    .compose([
-      dc.barChart(composerLine)
-        .dimension(pracDim)
-        .group(newPracGroup, "Surgical", function(d){return d.value["surgical"];})
-        // .stack(newPracGroup, "NonSurgical", function(d){return d.value["nonsurgical"];})
-        .ordering(function(d){return -(d.value["surgical"] + d.value["nonsurgical"]);})
-        //.ordering(graphOrderingFunction)
-        .yAxisLabel("Number of Cases")
-        .xAxisLabel("Practices")
-        .legend(dc.legend().x(100).y(10).itemHeight(13).gap(5))
-        .keyAccessor(function(d){return d["key"];})
-        .title(function(d){
-          return [d.key, "Surgical: " + d.value["surgical"], "Non-Surgical: " + d.value["nonsurgical"]].join("\n");
-        }),
-      dc.lineChart(composerLine)
-        .dimension(pracDim)
-        .curve(d3.curveLinear)
-        .y(yScale)
-        .group(cumGroup)
-        .keyAccessor(function(d){return d.key;})
-        .valueAccessor(function(d){return (100.0 * d.value.runningTotal / numPatientCountGroup.value());})
-
-      ]);
-    
-
-    composerLine.renderlet(function(chart){
-      chart.selectAll("g.x text")
-        .style("text-anchor", "start")
-        .style("fill", "#000")
-        .attr('transform', "translate(-12,-5) rotate(-90)");
-
-      chart.selectAll(".stack._0 .bar")
-        .style("fill", "#ed6355");
-
-      chart.selectAll(".stack._0 .bar.deselected")
-        .style("fill", "#ddd");
-
-      chart.selectAll(".stack._1 .bar")
-        .style("fill", "#6e5bba");
-      chart.selectAll(".stack._1 .bar.deselected")
-        .style("fill", "#ddd");
-
-      chart.selectAll("g.dc-legend-item rect")
-        .filter(function(d){ return d.name == "Surgical";
-                })
-        .style("fill", "#ed6355");
-      
-      chart.selectAll("g.dc-legend-item rect")
-      .filter(function(d){ return d.name == "NonSurgical";
-              })
-      .style("fill", "#6e5bba");
-
-    });
-
-    
-
-
+    .x(d3.scaleOrdinal())
+    .yAxisLabel("Number of Cases")
+    .xAxisLabel("Practices")
+    .legend(dc.legend().x(100).y(10).itemHeight(13).gap(5))
+    .keyAccessor(function(d){return d["key"];})
+    .title(function(d){
+      return d.key + ": " + String(d.value) + " cases";});
 }
 
 function LoadPracticeDisto(){
@@ -469,12 +409,13 @@ function LoadPracticeDisto(){
                           return p;
                         },
                         function(){return {"surgical":0, "nonsurgical":0};}
-                      ).order(groupScoringFunc);//There was nothing here previously
+                      );//There was nothing here previously
 
   height = 480;
   width = $("#practiceDistribution").width();
   var newPracGroup = remove_null_bins(pracGroup);
   pracDistro = dc.barChart("#practiceDistribution");
+  
 
   pracDistro
     .width(width)
@@ -522,43 +463,6 @@ function LoadPracticeDisto(){
       .style("fill", "#6e5bba");
 
     });
-
-    cumGroup = remove_null_bins(cumTotalsGroup(pracGroup));
-    yScale = d3.scaleLinear().domain([0,100]).range([0, height]);
-    //var extra_data = [{x: chart.x().range()[0], y: chart.y()(left_y)}, {x: chart.x().range()[1], y: chart.y()(right_y)}];
-    
-    var line = d3.line()
-        .x(function(d) { return d.key; })
-        .y(function(d) { return yScale(100.0 * d.value.runningTotal / numPatientCountGroup.value()); })
-        .curve(d3.curveLinear);
-    var chartBody = pracDistro.select('g.chart-body');
-    var path = chartBody.selectAll('path.extra').data(cumGroup);
-
-    path = path
-        .enter()
-            .append('path')
-            .attr('class', 'extra')
-            .attr('stroke', 'red')
-            .attr('id', 'extra-line')
-        .merge(path);
-    path.attr('d', line);
-
-    // pracDistro.render();
-
-    // dc.lineChart(pracDistro)
-    //   .height(height)
-    //   .width(width)
-    //   .x(d3.scaleOrdinal())
-    //   .xUnits(dc.units.ordinal)
-    //   .curve(d3.curveLinear)
-    //   .y(yScale)
-    //   .dimension(pracDim)
-    //   .group(cumGroup)
-    //   .keyAccessor(function(d){return d.key;})
-    //   .valueAccessor(function(d){return (100.0 * d.value.runningTotal / numPatientCountGroup.value());});
-
-
-
 }
 
 

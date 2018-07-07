@@ -17,6 +17,4 @@ function SetSearchableContent(allKeys){
   doctors = allKeys["doctors"];
   insurances = allKeys["insurances"];
   isSurgical = ["Surgical", "Non Surgical"];
-
-  
 }
