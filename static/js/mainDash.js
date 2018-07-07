@@ -105,17 +105,22 @@ function LoadLeaderBoards(){
   width = $("#topDocs").width();
   //docGroup = docGroup.order(function(d){return ((d.surgical * d.surgical)/(d.surgical + d.nonsurgical));});
   //pracGroup = pracGroup.order(function(d){return ((d.surgical * d.surgical)/(d.surgical + d.nonsurgical));});
+  //docBlockGroup = dropNAN_group(docGroup);
+  //pracBlockGroup = dropNAN_group(pracGroup);
+  noNullDocGroup = remove_empty_bins_table(docGroup);
+  noNullPracGroup = remove_empty_bins_table(pracGroup);
 
   topDocs
     .width(halfHeight)
     .height(width)
-    .dimension(docGroup)
+    .dimension(noNullDocGroup)
     .group(rank)
     .columns([function (d) { return d.value.surgical; },
               function (d) { return (d.value.surgical + d.value.nonsurgical); },
               function (d) { return String(Math.round(100*(d.value.surgical/(d.value.surgical + d.value.nonsurgical)))) + "%"; },
+              //function(d){return String(groupScoringFunc(d.value));},
               function (d) {return d.key;}])
-    .sortBy(function (d) { groupScoringFunc })
+    .sortBy(groupScoringFunc)
     .size(10)
     .order(d3.descending);
 
@@ -123,18 +128,19 @@ function LoadLeaderBoards(){
   topPracs
     .width(height)
     .height(width)
-    .dimension(pracGroup)
+    .dimension(noNullPracGroup)
     .group(rank)
     .columns([function (d) { return d.value.surgical; },
               function (d) { return (d.value.surgical + d.value.nonsurgical); },
               function (d) { return String(Math.round(100*(d.value.surgical/(d.value.surgical + d.value.nonsurgical)))) + "%"; },
+              //function(d){return String(groupScoringFunc(d.value));},
               function (d) {return d.key;}])
     .sortBy(groupScoringFunc)
     .size(10)
     .order(d3.descending);
 
 
-  badDocs = reversible_group(docGroup);
+  badDocs = reversible_group(noNullDocGroup);
   worstDocs
     .width(halfHeight)
     .height(width)
@@ -143,6 +149,7 @@ function LoadLeaderBoards(){
     .columns([function (d) { return d.value.surgical; },
               function (d) { return (d.value.surgical + d.value.nonsurgical); },
               function (d) { return String(Math.round(100*(d.value.surgical/(d.value.surgical + d.value.nonsurgical)))) + "%"; },
+              //function(d){return String(groupScoringFunc(d.value));},
               function (d) {return d.key;}])
     .sortBy(groupScoringFunc)
     .size(10)
@@ -203,6 +210,19 @@ function mungeDateToNum(sentDate){
 
   return dayNum;
 }
+function dropNAN_group(group){
+  return {
+    all: function(){
+      results = [];
+      group.all.forEach(function(d,i){
+        console.log(d);
+        results.push(d);
+      })
+      return results;
+    }
+  };
+}
+
 
 function reversible_group(group) {
     return {
@@ -409,7 +429,7 @@ function LoadPracticeDisto(){
                           return p;
                         },
                         function(){return {"surgical":0, "nonsurgical":0};}
-                      );//There was nothing here previously
+                      ).order(groupScoringFunc);//There was nothing here previously
 
   height = 480;
   width = $("#practiceDistribution").width();
@@ -461,16 +481,12 @@ function LoadPracticeDisto(){
       .filter(function(d){ return d.name == "NonSurgical";
               })
       .style("fill", "#6e5bba");
-
     });
 }
 
-
 function LoadMonthlySurgicalYieldGraph(){
-  //today = new Date(2017,11,31,0,0,0,0);
   today = new Date();
-  //monthDim = patientCross.dimension(function(d){if(numMonthsBetween(today, d.ClinicDate)<=8){return [d.ClinicDate.getFullYear(), d.ClinicDate.getMonth()]}});
-  
+    
   thisMonth = monthDim.top(1)[0];
   monthGroupCount = monthDim.group()
                         .reduce(
@@ -791,6 +807,67 @@ function keep_only12month_bins(source_group, ordMonths, allMonths, today) {
           return results;
         }
   };
+}
+
+function bubbleSort(arr){
+   var len = arr.length;
+   for (var i = len-1; i>=0; i--){
+     for(var j = 1; j<=i; j++){
+       if(groupScoringFunc(arr[j-1]['value']) < groupScoringFunc(arr[j]['value'])){
+           var temp = arr[j-1];
+           arr[j-1] = arr[j];
+           arr[j] = temp;
+        }
+     }
+   }
+   return arr;
+}
+
+
+
+function remove_empty_bins_table(source_group) {
+    return {
+        all:function () {
+            new_group = bubbleSort(source_group.all());
+            results = [];
+            new_group.forEach(function(d,i){
+              if((d.value.surgical + d.value.nonsurgical) > 0){
+                results.push(d);
+              }
+            });
+
+            return results;
+            // return source_group.all().filter(function(d) {
+            //     return (d.value.surgical + d.value.nonsurgical) != 0;
+            // });
+        },
+        top: function(N) {
+            // return source_group.all().filter(function(d) {
+            //     return (d.value.surgical + d.value.nonsurgical) != 0;
+            // });
+
+            results = [];
+            counter = 0; 
+            new_group = bubbleSort(source_group.all());
+
+            new_group.forEach(function(d,i){
+              if(counter < N){
+                if((d.value.surgical + d.value.nonsurgical) > 0){
+                  results.push(d);
+                  counter += 1;
+                }
+              }
+              else{
+                return results;
+              }
+            });
+
+            return results;
+        },
+        bottom: function(N) {
+            return source_group.top(Infinity).slice(-N).reverse();
+        }
+    };
 }
 
 function remove_null_bins(source_group) {
